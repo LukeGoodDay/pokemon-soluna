@@ -1,5 +1,5 @@
-# Pokemon Soluna
-### Team Members: Kyle Chiasson, Will Krietemeyer, Luke Welday  
+# Pokémon Soluna
+### Team Members: Kyle Chiasson, Will Krietemeyer, Luke Welday
 ## Goal
 &emsp;Pokémon Soluna will act as a Pokémon Sun and Moon companion app. It will provide detailed information on all the Pokémon, moves, and items found throughout the game. This app will also allow users to create and save potential teams within the app to help map out their playthroughs.  
 ## Datasets
@@ -10,6 +10,14 @@
 ## ER Diagram
 WIP  
 ## Interaction
-WIP  
+### Accounts
+&emsp;•&emsp;Sign up / log in / log out  
+### Team Building
+&emsp;•&emsp;Create / edit / delete Pokémon teams  
+&emsp;•&emsp;Show type matchups/coverage for Pokémon team  
+### Pokedex
+&emsp;•&emsp;Provide information on all Pokémon, moves, and items found throughout the game  
+### Insights
+&emsp;•&emsp;Provide statistics on most popular Pokémon, items, moves, and types  
 ## Video
 WIP  
