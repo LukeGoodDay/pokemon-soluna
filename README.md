@@ -15,9 +15,13 @@ WIP
 ### Team Building
 &emsp;•&emsp;Create / edit / delete Pokémon teams  
 &emsp;•&emsp;Show type matchups/coverage for Pokémon team  
+### Wonder Trades
+&emsp;•&emsp;Provide information on wonder trade chance for each Pokémon
+&emsp;•&emsp;Allow users to submit data on pokemon they recieve through wonder trades 
 ### Pokedex
 &emsp;•&emsp;Provide information on all Pokémon, moves, and items found throughout the game  
 ### Insights
 &emsp;•&emsp;Provide statistics on most popular Pokémon, items, moves, and types  
+&emsp;•&emsp;Provide statistics on Wonder Trade chances
 ## Video
 WIP  
