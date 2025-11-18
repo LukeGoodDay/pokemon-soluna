@@ -1,9 +1,15 @@
 CREATE TABLE
 	users(
 		user_id INT PRIMARY KEY AUTO_INCREMENT,
-        username VARCHAR(30) UNIQUE NOT NULL,
-        hashed_password VARCHAR(256) NOT NULL
+        username VARCHAR(30) UNIQUE NOT NULL
     );
+
+CREATE TABLE
+	passwords(
+		user_id INT UNIQUE NOT NULL,
+        hashed_password VARCHAR(256) NOT NULL,
+		FOREIGN KEY (user_id) REFERENCES users(user_id)
+	);
 
 CREATE TABLE
 	species(
