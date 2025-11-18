@@ -14,6 +14,30 @@ CREATE TABLE
 	);
 
 CREATE TABLE
+    type_chart(
+		type_id INT PRIMARY KEY AUTO_INCREMENT,
+		primary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
+		secondary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'),
+		normal_mult FLOAT NOT NULL,
+        fire_mult FLOAT NOT NULL,
+        water_mult FLOAT NOT NULL,
+        electric_mult FLOAT NOT NULL,
+        grass_mult FLOAT NOT NULL,
+        ice_mult FLOAT NOT NULL,
+        fighting_mult FLOAT NOT NULL,
+        ground_mult FLOAT NOT NULL,
+        flying_mult FLOAT NOT NULL,
+        psychic_mult FLOAT NOT NULL,
+        bug_mult FLOAT NOT NULL,
+        rock_mult FLOAT NOT NULL,
+        ghost_mult FLOAT NOT NULL,
+        dragon_mult FLOAT NOT NULL,
+        dark_mult FLOAT NOT NULL,
+        steel_mult FLOAT NOT NULL,
+        fairy_mult FLOAT NOT NULL
+    );
+
+CREATE TABLE
 	species(
 		species_id INT PRIMARY KEY,
         species_name VARCHAR(20) UNIQUE NOT NULL,
@@ -72,14 +96,15 @@ CREATE TABLE
 		move_id INT PRIMARY KEY AUTO_INCREMENT,
 		move_name VARCHAR(30) UNIQUE NOT NULL,
         description VARCHAR(250) NOT NULL,
-        move_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
+        type_id INT NOT NULL,
         category ENUM('physical', 'status', 'special'),
         power INT,
         accuracy INT,
         pp INT NOT NULL,
         z_effect VARCHAR(20) NOT NULL,
         priority INT NOT NULL,
-        crit INT NOT NULL
+        crit INT NOT NULL,
+	    FOREIGN KEY (type_id) REFERENCES type_chart(type_id)
     );
 
 CREATE TABLE
@@ -162,28 +187,4 @@ CREATE TABLE
         nature_id INT,
         FOREIGN KEY (form_id) REFERENCES forms(form_id),
         FOREIGN KEY (nature_id) REFERENCES natures(nature_id)
-    );
-
-CREATE TABLE
-    type_chart(
-		type_id INT PRIMARY KEY AUTO_INCREMENT,
-		primary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
-		secondary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'),
-		normal_mult FLOAT NOT NULL,
-        fire_mult FLOAT NOT NULL,
-        water_mult FLOAT NOT NULL,
-        electric_mult FLOAT NOT NULL,
-        grass_mult FLOAT NOT NULL,
-        ice_mult FLOAT NOT NULL,
-        fighting_mult FLOAT NOT NULL,
-        ground_mult FLOAT NOT NULL,
-        flying_mult FLOAT NOT NULL,
-        psychic_mult FLOAT NOT NULL,
-        bug_mult FLOAT NOT NULL,
-        rock_mult FLOAT NOT NULL,
-        ghost_mult FLOAT NOT NULL,
-        dragon_mult FLOAT NOT NULL,
-        dark_mult FLOAT NOT NULL,
-        steel_mult FLOAT NOT NULL,
-        fairy_mult FLOAT NOT NULL
     );
