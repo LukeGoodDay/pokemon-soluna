@@ -61,6 +61,7 @@ CREATE TABLE
         class VARCHAR(30) NOT NULL,
         percent_male FLOAT,
         percent_female FLOAT,
+	    FOREIGN KEY (species_id) REFERENCES species(species_id),
         FOREIGN KEY (ability_1) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_2) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_h) REFERENCES abilities(ability_id)
