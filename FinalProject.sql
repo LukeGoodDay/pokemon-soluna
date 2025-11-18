@@ -124,10 +124,10 @@ CREATE TABLE
         FOREIGN KEY (nature_id) REFERENCES natures(nature_id),
         FOREIGN KEY (ability_id) REFERENCES abilities(ability_id),
         FOREIGN KEY (item_id) REFERENCES items(item_id),
-        FOREIGN KEY (move_1) REFERENCES moves(ability_id),
-        FOREIGN KEY (move_2) REFERENCES moves(ability_id),
-        FOREIGN KEY (move_3) REFERENCES moves(ability_id),
-        FOREIGN KEY (move_4) REFERENCES moves(ability_id)
+        FOREIGN KEY (move_1) REFERENCES moves(move_id),
+        FOREIGN KEY (move_2) REFERENCES moves(move_id),
+        FOREIGN KEY (move_3) REFERENCES moves(move_id),
+        FOREIGN KEY (move_4) REFERENCES moves(move_id)
     );
 
 CREATE TABLE
@@ -158,7 +158,7 @@ CREATE TABLE
         gender ENUM('M','F'),
         nature_id INT,
         FOREIGN KEY (form_id) REFERENCES forms(form_id),
-        FOREIGN KEY (nature_id) REFERENCES nature(nature_id)
+        FOREIGN KEY (nature_id) REFERENCES natures(nature_id)
     );
 
 CREATE TABLE
