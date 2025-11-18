@@ -27,7 +27,7 @@ CREATE TABLE
 	abilities(
 		ability_id INT PRIMARY KEY AUTO_INCREMENT,
 		ability_name VARCHAR(30) UNIQUE NOT NULL,
-        description VARCHAR(150) UNIQUE NOT NULL
+        description VARCHAR(150) NOT NULL
     );
 
 CREATE TABLE
@@ -42,8 +42,7 @@ CREATE TABLE
 		form_id INT PRIMARY KEY AUTO_INCREMENT,
         species_id INT NOT NULL,
         form_name VARCHAR(30) UNIQUE NOT NULL,
-        primary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
-        secondary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'),
+        type_id INT,
         ability_1 INT,
         ability_2 INT,
         ability_h INT,
@@ -62,6 +61,7 @@ CREATE TABLE
         percent_male FLOAT,
         percent_female FLOAT,
 	    FOREIGN KEY (species_id) REFERENCES species(species_id),
+	    FOREIGN KEY (type_id) REFERENCES type_chart(type_id),
         FOREIGN KEY (ability_1) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_2) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_h) REFERENCES abilities(ability_id)
@@ -71,7 +71,7 @@ CREATE TABLE
 	moves(
 		move_id INT PRIMARY KEY AUTO_INCREMENT,
 		move_name VARCHAR(30) UNIQUE NOT NULL,
-        description VARCHAR(250) UNIQUE NOT NULL,
+        description VARCHAR(250) NOT NULL,
         move_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
         category ENUM('physical', 'status', 'special'),
         power INT,
@@ -96,7 +96,7 @@ CREATE TABLE
 	items(
 		item_id INT PRIMARY KEY AUTO_INCREMENT,
 		item_name VARCHAR(20) UNIQUE NOT NULL,
-        description VARCHAR(250) UNIQUE NOT NULL
+        description VARCHAR(250) NOT NULL
     );
 
 CREATE TABLE
@@ -166,6 +166,7 @@ CREATE TABLE
 
 CREATE TABLE
     type_chart(
+		type_id INT PRIMARY KEY AUTO_INCREMENT,
 		primary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
 		secondary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'),
 		normal_mult FLOAT NOT NULL,
@@ -184,6 +185,5 @@ CREATE TABLE
         dragon_mult FLOAT NOT NULL,
         dark_mult FLOAT NOT NULL,
         steel_mult FLOAT NOT NULL,
-        fairy_mult FLOAT NOT NULL,
-        PRIMARY KEY (primary_type, secondary_type)
+        fairy_mult FLOAT NOT NULL
     );
