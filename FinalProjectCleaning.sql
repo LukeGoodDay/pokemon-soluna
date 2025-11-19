@@ -48,61 +48,24 @@ ON
 	hatching_staging.ID = species.species_id;
 
 -- Forms
--- INSERT
--- 	forms (species_id, form_name, type_id, ability_1, ability_2, ability_h, hp, attack, defense, special_attack, special_defense, speed, total_stats, weight_lbs, height_in, description_1, description_2, class, percent_male, percent_female)
--- SELECT
--- 	ndex, forme, type_id, ability_1, ability_2, ability_h, hp, attack, defense, spattack, spdefense, speed, total, 
--- 	CAST(REPLACE(weight, ' lbs', '') AS FLOAT) AS weight_lbs,
--- 	(CAST(SUBSTRING_INDEX(height, '\'\'', 1) AS UNSIGNED) * 12) + CAST(REPLACE(SUBSTRING_INDEX(height, '\'\'', -1), '\"', '') AS UNSIGNED) AS height_in,
---     dex1, dex2, class, percentmale, percentfemale
--- FROM
--- (
--- 	SELECT
--- 		ndex, forme, type1, type2,
--- 		abilities.ability_id as ability_1, 
--- 		ability_2,
--- 		ability_h,
--- 		hp,	attack,
--- 		defense, spattack, spdefense, speed, total, weight, height, dex1, dex2, class, percentmale,	percentfemale
--- 	FROM
--- 	(
--- 		SELECT
--- 			ndex, forme, type1, type2,
--- 			ability1, 
--- 			abilities.ability_id as ability_2,
--- 			ability_h,
--- 			hp,	attack,
--- 			defense, spattack, spdefense, speed, total, weight, height, dex1, dex2, class, percentmale,	percentfemale
--- 		FROM
--- 		(
--- 			SELECT
--- 				ndex, forme, type1, type2,
--- 				ability1, 
--- 				ability2,
--- 				abilities.ability_id as ability_h,
--- 				hp,	attack,
--- 				defense, spattack, spdefense, speed, total, weight, height, dex1, dex2, class, percentmale,	percentfemale
--- 			FROM
--- 				pokemon_staging
--- 			LEFT JOIN
--- 				abilities
--- 			ON
--- 				pokemon_staging.abilityH = abilities.ability_name
--- 		) AS res3
--- 		LEFT JOIN
--- 			abilities
--- 		ON
--- 			res3.ability2 = abilities.ability_name
--- 	) AS res2
--- 	LEFT JOIN
--- 		abilities
--- 	ON
--- 		res2.ability1 = abilities.ability_name
--- ) AS res1
--- INNER JOIN
--- 	type_chart
--- ON
--- 	res1.type1 = type_chart.primary_type and res1.type2 = type_chart.secondary_type;
+INSERT
+	forms (species_id, form_name, type_id, ability_1, ability_2, ability_h, hp, attack, defense, special_attack, special_defense, speed, total_stats, weight_lbs, height_in, description_1, description_2, class, percent_male, percent_female)
+SELECT DISTINCT
+	ndex, forme, type_id, 
+    abilities1.ability_id as ability_1, 
+    abilities2.ability_id as ability_2, 
+    abilitiesH.ability_id as ability_h, 
+    hp, attack, defense, spattack, spdefense, speed, total, 
+	CAST(TRIM(TRAILING '.' FROM TRIM(REPLACE(weight, ' lbs', ''))) AS FLOAT) AS weight_lbs,
+	(CAST(SUBSTRING_INDEX(height, '\'', 1) AS UNSIGNED) * 12) + (CAST(TRIM(TRAILING '\"' FROM SUBSTRING_INDEX(height, '\'', -1)) AS UNSIGNED)) AS height_in,
+    dex1, dex2, class, percentmale, percentfemale
+FROM
+	pokemon_staging
+LEFT JOIN abilities AS abilitiesH ON pokemon_staging.abilityH = abilitiesH.ability_name
+LEFT JOIN abilities AS abilities2 ON pokemon_staging.ability2 = abilities2.ability_name
+LEFT JOIN abilities AS abilities1 ON pokemon_staging.ability1 = abilities1.ability_name
+INNER JOIN type_chart ON pokemon_staging.type1 = type_chart.primary_type AND (pokemon_staging.type2 = type_chart.secondary_type OR (pokemon_staging.type2 IS NULL AND type_chart.secondary_type IS NULL))
+WHERE (pokemon_staging.ndex != 718 OR pokemon_staging.ability1 IS NOT NULL) AND (pokemon_staging.ndex != 774 OR pokemon_staging.dex1 IS NOT NULL); -- Remove Zygarde and Minior DUPS
 
 -- Moves
 
@@ -139,18 +102,3 @@ FROM
 
 -- Wonder Trades
 
--- The OOPS Section
--- DROP TABLE wonder_trades;
--- DROP TABLE teams;
--- DROP TABLE pokemon;
--- DROP TABLE natures;
--- DROP TABLE items;
--- DROP TABLE form_move;
--- DROP TABLE moves;
--- DROP TABLE forms;
--- DROP TABLE hatching;
--- DROP TABLE abilities;
--- DROP TABLE species;
--- DROP TABLE passwords;
--- DROP TABLE users;
--- DROP TABLE type_chart;
