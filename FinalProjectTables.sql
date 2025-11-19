@@ -102,7 +102,7 @@ CREATE TABLE
         power INT,
         accuracy INT,
         pp INT NOT NULL,
-        z_effect VARCHAR(20) NOT NULL,
+        z_effect VARCHAR(65) NOT NULL,
         priority INT NOT NULL,
         crit INT NOT NULL,
 	    FOREIGN KEY (type_id) REFERENCES type_chart(type_id)
@@ -110,17 +110,17 @@ CREATE TABLE
 
 CREATE TABLE
 	form_move(
+		form_move_id INTEGER PRIMARY KEY AUTO_INCREMENT,
 		form_id INT,
         move_id INT,
         get_from VARCHAR(5),
-        PRIMARY KEY (form_id, move_id),
         FOREIGN KEY (form_id) REFERENCES forms(form_id),
         FOREIGN KEY (move_id) REFERENCES moves(move_id)
     );
     
 CREATE TABLE
 	items(
-		item_id INT PRIMARY KEY,
+		item_id INT PRIMARY KEY AUTO_INCREMENT,
 		item_name VARCHAR(20) UNIQUE NOT NULL,
         description VARCHAR(250) NOT NULL
     );
