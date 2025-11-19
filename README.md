@@ -8,7 +8,7 @@
 &emsp;•&emsp;Pokémon Sun and Moon Wonder Trade Stats - https://data.world/notgibs/pokemon-wonder-trade-results  
 &emsp;•&emsp;Steps Required to Hatch Pokémon - https://www.kaggle.com/datasets/rachellecha/egg-hatching-step-counts-in-pokemon  
 ## ER Diagram
-![Alt text](./FinalProject.drawio.png)
+![Alt text](./FinalProjectDiagram.png)
 ## Interaction
 ### Accounts
 &emsp;•&emsp;Sign up / log in / log out  
