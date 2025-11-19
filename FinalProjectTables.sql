@@ -15,7 +15,7 @@ CREATE TABLE
 
 CREATE TABLE
     type_chart(
-		type_id INT PRIMARY KEY AUTO_INCREMENT,
+		type_id INT PRIMARY KEY,
 		primary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy') NOT NULL,
 		secondary_type ENUM('normal','fire','water','electric','grass','ice','fighting','poison','ground','flying','psychic','bug','rock','ghost','dragon','dark','steel','fairy'),
 		normal_mult FLOAT NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE
     
 CREATE TABLE
 	items(
-		item_id INT PRIMARY KEY AUTO_INCREMENT,
+		item_id INT PRIMARY KEY,
 		item_name VARCHAR(20) UNIQUE NOT NULL,
         description VARCHAR(250) NOT NULL
     );
