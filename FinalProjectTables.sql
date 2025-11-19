@@ -25,6 +25,7 @@ CREATE TABLE
         grass_mult FLOAT NOT NULL,
         ice_mult FLOAT NOT NULL,
         fighting_mult FLOAT NOT NULL,
+        poison_mult FLOAT NOT NULL,
         ground_mult FLOAT NOT NULL,
         flying_mult FLOAT NOT NULL,
         psychic_mult FLOAT NOT NULL,
