@@ -79,7 +79,7 @@ CREATE TABLE
         speed INT NOT NULL,
         total_stats INT NOT NULL,
         weight_lbs FLOAT NOT NULL,
-        height_in FLOAT NOT NULL,
+        height_in INTEGER NOT NULL,
         description_1 VARCHAR(250),
 		description_2 VARCHAR(250),
         class VARCHAR(30) NOT NULL,
