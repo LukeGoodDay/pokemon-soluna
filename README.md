@@ -19,7 +19,7 @@
 &emsp;•&emsp;App will provide information on wonder trade chance for each Pokémon  
 &emsp;•&emsp;Users can submit data on pokemon they recieve through wonder trades 
 ### Pokedex
-&emsp;•&emsp;;App will provide information on all Pokémon, moves, and items found throughout the game  
+&emsp;•&emsp;App will provide information on all Pokémon, moves, and items found throughout the game  
 ### Insights
 &emsp;•&emsp;App will provide statistics on most popular Pokémon, items, moves, and types  
 &emsp;•&emsp;App will provide statistics on Wonder Trade chances
