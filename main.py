@@ -19,25 +19,6 @@ def print_sql_error(e: Error, where: str):
     # Print detailed error info
     print(f"[SQL ERROR @ {where}] {e.msg} | errno: {e.errno} | sqlstate: {e.sqlstate}")
 
-def ensure_schema_and_tables(conn, cfg: DbConfig):
-    """
-    Ensures the database schema and table exist.
-    If the database does not exist, create it.
-    Then switch to using it and create the `users` table if absent.
-    """
-    cursor = conn.cursor()
-    try:
-        # Create database if missing
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{cfg.database}`")
-        # Use the database
-        conn.database = cfg.database
-        # Assumes all required tables are setup
-    except Error as e:
-        print_sql_error(e, "ensure_schema_and_tables")
-        raise
-    finally:
-        cursor.close()
-
 def pretty_print(cursor, leng=20):
     start = True
     for r in cursor:
@@ -68,10 +49,22 @@ def pretty_print(cursor, leng=20):
             counter +=1
         print('|')
 
-def picker(cursor, leng=10):
+def picker(cursor, leng = 15):
+    cnt = 0
+    options = []
     for r in cursor:
-        print(f"{r[0]}. {r[1]}")
-    return input('Option #: ')
+        cnt += 1
+        options.append(r[0])
+        print(f"{r[0]}. {r[1]}".ljust(leng), end=' ')
+        if cnt == 4:
+            cnt = 0
+            print()
+    while True:
+        res = int(input('Option #: '))
+        if res in options:
+            print()
+            return res
+        print("Result not in list, try again")
 
 def print_team(conn, teamid):
     cursor = conn.cursor(prepared=True)
@@ -82,8 +75,8 @@ def print_team(conn, teamid):
         cursor.execute(sql, (teamid, ))
         row = cursor.fetchall()
         if len(row) == 0:
-            print("not found")
-            return
+            print("Species not found, try again.")
+            return -1
         row = row[0]
         print("Team Name:", row[2])
         for i in range(3, len(row)):
@@ -102,7 +95,7 @@ def print_team(conn, teamid):
             cursor.execute(sql, (poke_id, ))
             res = cursor.fetchall()
             if len(res) == 0:
-                print("not found")
+                print("Error while displaying team.")
                 break
             res = res[0]
             print(f"slot {i-2} - {res[0]}: {res[1]}, {res[2]}, {res[3]}, {res[4]}")
@@ -116,28 +109,31 @@ def print_team(conn, teamid):
 def create_pokemon_terminal(conn):
     cursor = conn.cursor(prepared=True)
     try:
-        print("Please insert the name of the species")
-        name = input("Species Name: ")
-        sql = '''SELECT species_id
-            FROM species
-            WHERE species_name = %s;'''
-        cursor.execute(sql, (name, ))
-        sid = cursor.fetchall()
-        if len(sid) == 0:
-            print("not found")
-            return
+        sid = []
+        while len(sid) == 0:
+            print("Please insert the name of the species")
+            name = input("Species Name: ")
+            if name == "exit":
+                return -2
+            sql = '''SELECT species_id
+                FROM species
+                WHERE species_name = %s;'''
+            cursor.execute(sql, (name, ))
+            sid = cursor.fetchall()
+            if len(sid) == 0:
+                print("Species not found, try again.")
         sid = sid[0][0]
         print(sid)
         sql = '''SELECT form_id, form_name
             FROM forms
-            WHERE species_id = 143;'''
+            WHERE species_id = %s;'''
         cursor.execute(sql, (sid, ))
         fid = cursor.fetchall()
         if len(fid) == 1:
-            print('Only one form')
+            print('Only one form, it has been picked.')
             fid = fid[0][0]
         elif len(fid) == 0:
-            print("Unexpected Error - no forms")
+            print("Unexpected Error - no forms.")
             return -1
         else:
             print("Multiple forms, pick which:")
@@ -146,6 +142,8 @@ def create_pokemon_terminal(conn):
         nick = input('nickname: ')
         print("Enter M for male or F for female:")
         gender = input("gender: ")
+        if gender != 'M' or gender != 'F':
+            gender = None
         sql = '''SELECT nature_id, nature_name
             FROM natures;'''
         cursor.execute(sql)
@@ -161,7 +159,7 @@ def create_pokemon_terminal(conn):
             cursor.execute(sql, (able, ))
             aid = cursor.fetchall()
             if len(aid) == 0:
-                print("not found")
+                print("Ability not found, please try again.")
         aid = aid[0][0]
         print(fid, nick, gender, nature, aid)
         sql = '''INSERT INTO pokemon
@@ -191,6 +189,8 @@ def create_team_terminal(conn):
         conn.commit()
         for i in range(6):
             poke_id = create_pokemon_terminal(conn)
+            if poke_id == -2:
+                break
             sql = f'''UPDATE teams 
                 SET pokemon_{i + 1} = %s 
                 WHERE team_id = %s;'''
