@@ -59,10 +59,10 @@ def picker(cursor, leng = 15):
         if cnt == 4:
             cnt = 0
             print()
+    print()
     while True:
         res = int(input('Option #: '))
         if res in options:
-            print()
             return res
         print("Result not in list, try again")
 
@@ -141,8 +141,8 @@ def create_pokemon_terminal(conn):
         print("Nickname your pokemon:")
         nick = input('nickname: ')
         print("Enter M for male or F for female:")
-        gender = input("gender: ")
-        if gender != 'M' or gender != 'F':
+        gender = input("gender: ").upper()
+        if gender != 'M' and gender != 'F':
             gender = None
         sql = '''SELECT nature_id, nature_name
             FROM natures;'''
