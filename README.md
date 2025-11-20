@@ -24,4 +24,4 @@
 &emsp;•&emsp;App will provide statistics on most popular Pokémon, items, moves, and types  
 &emsp;•&emsp;App will provide statistics on Wonder Trade chances
 ## Video
-WIP  
+[Download Video](https://raw.githubusercontent.com/LukeGoodDay/pokemon-soluna/main/Part%201%20Video.mp4)
