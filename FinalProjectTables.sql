@@ -7,11 +7,30 @@ CREATE TABLE
     );
 
 CREATE TABLE
-	passwords(
+	user_auth(
 		user_id INT UNIQUE NOT NULL,
+        email VARCHAR(256) NOT NULL,
         hashed_password VARCHAR(256) NOT NULL,
 		FOREIGN KEY (user_id) REFERENCES users(user_id)
 	);
+
+CREATE TABLE
+	sessions(
+		session_id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        started DATETIME NOT NULL,
+        ended DATETIME,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
+
+CREATE TABLE
+	activity_log(
+		aid INT PRIMARY KEY AUTO_INCREMENT,
+        ssid INT NOT NULL,
+        action_taken VARCHAR(30) NOT NULL,
+        action_time DATETIME NOT NULL,
+        FOREIGN KEY (ssid) REFERENCES sessions(ssid)
+    );
 
 CREATE TABLE
     type_chart(
@@ -68,9 +87,6 @@ CREATE TABLE
         species_id INT NOT NULL,
         form_name VARCHAR(30) UNIQUE NOT NULL,
         type_id INT,
-        ability_1 INT,
-        ability_2 INT,
-        ability_h INT,
         hp INT NOT NULL,
         attack INT NOT NULL,
         defense INT NOT NULL,
@@ -78,6 +94,16 @@ CREATE TABLE
         special_defense INT NOT NULL,
         speed INT NOT NULL,
         total_stats INT NOT NULL,
+	    FOREIGN KEY (species_id) REFERENCES species(species_id),
+	    FOREIGN KEY (type_id) REFERENCES type_chart(type_id)
+    );
+    
+CREATE TABLE
+	form_info(
+		form_id INT PRIMARY KEY,
+        ability_1 INT,
+        ability_2 INT,
+        ability_h INT,
         weight_lbs FLOAT NOT NULL,
         height_in INTEGER NOT NULL,
         description_1 VARCHAR(250),
@@ -85,13 +111,21 @@ CREATE TABLE
         class VARCHAR(30) NOT NULL,
         percent_male FLOAT,
         percent_female FLOAT,
-	    FOREIGN KEY (species_id) REFERENCES species(species_id),
-	    FOREIGN KEY (type_id) REFERENCES type_chart(type_id),
+	    FOREIGN KEY (form_id) REFERENCES forms(form_id),
         FOREIGN KEY (ability_1) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_2) REFERENCES abilities(ability_id),
         FOREIGN KEY (ability_h) REFERENCES abilities(ability_id)
     );
     
+CREATE TABLE
+	images(
+		image_id INT PRIMARY KEY AUTO_INCREMENT,
+		form_id INT NOT NULL,
+        image_name VARCHAR(30) NOT NULL,
+        image_path VARCHAR(256) NOT NULL,
+        FOREIGN KEY (form_id) REFERENCES forms(form_id)
+    );
+
 CREATE TABLE
 	moves(
 		move_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -188,4 +222,46 @@ CREATE TABLE
         nature_id INT,
         FOREIGN KEY (form_id) REFERENCES forms(form_id),
         FOREIGN KEY (nature_id) REFERENCES natures(nature_id)
+    );
+
+CREATE TABLE
+    challenges(
+		challenge_id INT PRIMARY KEY AUTO_INCREMENT,
+        description VARCHAR(256)
+    );
+
+CREATE TABLE
+    pokemon_popularity(
+		form_id INT,
+        count INT,
+        rank INT,
+        total_percentage double,
+        FOREIGN KEY (form_id) REFERENCES forms(form_id)
+    );
+
+CREATE TABLE
+    type_popularity(
+		type_id INT,
+        count INT,
+        rank INT,
+        total_percentage double,
+        FOREIGN KEY (type_id) REFERENCES type_chart(type_id)
+    );
+
+CREATE TABLE
+    item_popularity(
+		item_id INT,
+        count INT,
+        rank INT,
+        total_percentage double,
+        FOREIGN KEY (item_id) REFERENCES items(items_id)
+    );
+
+CREATE TABLE
+    move_popularity(
+		move_id INT,
+        count INT,
+        rank INT,
+        total_percentage double,
+        FOREIGN KEY (move_id) REFERENCES moves(move_id)
     );
