@@ -25,11 +25,11 @@ CREATE TABLE
 
 CREATE TABLE
 	activity_log(
-		aid INT PRIMARY KEY AUTO_INCREMENT,
-        ssid INT NOT NULL,
+		log_id INT PRIMARY KEY AUTO_INCREMENT,
+        session_id INT NOT NULL,
         action_taken VARCHAR(30) NOT NULL,
         action_time DATETIME NOT NULL,
-        FOREIGN KEY (ssid) REFERENCES sessions(ssid)
+        FOREIGN KEY (session_id) REFERENCES sessions(session_id)
     );
 
 CREATE TABLE
