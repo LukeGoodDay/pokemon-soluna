@@ -225,12 +225,6 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    challenges(
-		challenge_id INT PRIMARY KEY AUTO_INCREMENT,
-        description VARCHAR(256)
-    );
-
-CREATE TABLE
     pokemon_popularity(
 		form_id INT,
         count INT,
