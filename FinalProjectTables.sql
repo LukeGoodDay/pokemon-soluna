@@ -228,7 +228,7 @@ CREATE TABLE
     pokemon_popularity(
 		form_id INT,
         count INT,
-        rank INT,
+        popularity_rank INT,
         total_percentage double,
         FOREIGN KEY (form_id) REFERENCES forms(form_id)
     );
@@ -237,7 +237,7 @@ CREATE TABLE
     type_popularity(
 		type_id INT,
         count INT,
-        rank INT,
+        popularity_rank INT,
         total_percentage double,
         FOREIGN KEY (type_id) REFERENCES type_chart(type_id)
     );
@@ -246,7 +246,7 @@ CREATE TABLE
     item_popularity(
 		item_id INT,
         count INT,
-        rank INT,
+        popularity_rank INT,
         total_percentage double,
         FOREIGN KEY (item_id) REFERENCES items(items_id)
     );
@@ -255,7 +255,7 @@ CREATE TABLE
     move_popularity(
 		move_id INT,
         count INT,
-        rank INT,
+        popularity_rank INT,
         total_percentage double,
         FOREIGN KEY (move_id) REFERENCES moves(move_id)
     );
