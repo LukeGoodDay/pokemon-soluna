@@ -49,14 +49,23 @@ ON
 
 -- Forms
 INSERT
-	forms (species_id, form_name, type_id, ability_1, ability_2, ability_h, hp, attack, defense, special_attack, special_defense, speed, total_stats, weight_lbs, height_in, description_1, description_2, class, percent_male, percent_female)
+	forms(species_id, form_name, type_id, hp, attack, defense, special_attack, special_defense, speed, total_stats)
 SELECT DISTINCT
-	ndex, forme, type_id, 
-    abilities1.ability_id as ability_1, 
+	ndex, forme, type_id, hp, attack, defense, spattack, spdefense, speed, total
+FROM
+	pokemon_staging
+INNER JOIN type_chart ON pokemon_staging.type1 = type_chart.primary_type AND (pokemon_staging.type2 = type_chart.secondary_type OR (pokemon_staging.type2 IS NULL AND type_chart.secondary_type IS NULL))
+WHERE (pokemon_staging.ndex != 718 OR pokemon_staging.ability1 IS NOT NULL) AND (pokemon_staging.ndex != 774 OR pokemon_staging.dex1 IS NOT NULL); -- Remove Zygarde and Minior DUPS
+
+-- Form Info
+INSERT
+	form_info(form_id, ability_1, ability_2, ability_h, weight_lbs, height_in, description_1, description_2, class, percent_male, percent_female)
+SELECT DISTINCT
+	form_id,
+	abilities1.ability_id as ability_1, 
     abilities2.ability_id as ability_2, 
-    abilitiesH.ability_id as ability_h, 
-    hp, attack, defense, spattack, spdefense, speed, total, 
-	CAST(TRIM(TRAILING '.' FROM TRIM(REPLACE(weight, ' lbs', ''))) AS FLOAT) AS weight_lbs,
+    abilitiesH.ability_id as ability_h,
+    CAST(TRIM(TRAILING '.' FROM TRIM(REPLACE(weight, ' lbs', ''))) AS FLOAT) AS weight_lbs,
 	(CAST(SUBSTRING_INDEX(height, '\'', 1) AS UNSIGNED) * 12) + (CAST(TRIM(TRAILING '\"' FROM SUBSTRING_INDEX(height, '\'', -1)) AS UNSIGNED)) AS height_in,
     dex1, dex2, class, percentmale, percentfemale
 FROM
@@ -64,7 +73,7 @@ FROM
 LEFT JOIN abilities AS abilitiesH ON pokemon_staging.abilityH = abilitiesH.ability_name
 LEFT JOIN abilities AS abilities2 ON pokemon_staging.ability2 = abilities2.ability_name
 LEFT JOIN abilities AS abilities1 ON pokemon_staging.ability1 = abilities1.ability_name
-INNER JOIN type_chart ON pokemon_staging.type1 = type_chart.primary_type AND (pokemon_staging.type2 = type_chart.secondary_type OR (pokemon_staging.type2 IS NULL AND type_chart.secondary_type IS NULL))
+INNER JOIN forms ON forms.form_name = pokemon_staging.forme
 WHERE (pokemon_staging.ndex != 718 OR pokemon_staging.ability1 IS NOT NULL) AND (pokemon_staging.ndex != 774 OR pokemon_staging.dex1 IS NOT NULL); -- Remove Zygarde and Minior DUPS
 
 -- Moves
@@ -248,3 +257,35 @@ FROM
 ) AS wt_staging
 INNER JOIN natures ON wt_staging.`Nature` = natures.nature_name
 INNER JOIN forms ON wt_staging.renamed_pokemon = forms.form_name;
+
+-- Pokemon Popularity
+INSERT
+	pokemon_popularity
+SELECT
+	form_id, 0, 1, 0.0
+FROM
+	forms;
+
+-- Type Popularity
+INSERT
+	type_popularity
+SELECT
+	type_id, 0, 1, 0.0
+FROM
+	type_chart;
+
+-- Item Popularity
+INSERT
+	item_popularity
+SELECT
+	item_id, 0, 1, 0.0
+FROM
+	items;
+
+-- Move Popularity
+INSERT
+	move_popularity
+SELECT
+	move_id, 0, 1, 0.0
+FROM
+	moves;
