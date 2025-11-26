@@ -92,14 +92,27 @@ def logout(mysql_cursor, session_id):
 # int session_id - the current session token
 # returns - the list of the active user's teams
 def get_user_teams(mysql_cursor, session_id):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT team_id, user_id, team_name, pokemon_1, pokemon_2, pokemon_3, pokemon_4, pokemon_5, pokemon_6
+        FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
+    """)
+    log(mysql_cursor, session_id, "SEARCH teams")
+    return mysql_cursor.fetchall()
 
 # new_team - creates a new team for the current user
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
+# string team_name - the name of the team (max 30 char)
 # returns int - the team id
-def new_team(mysql_cursor, session_id):
-    pass
+def new_team(mysql_cursor, session_id, team_name):
+    mysql_cursor.execute(
+    f"""
+        INSERT teams(user_id, team_name) SELECT user_id, "{team_name}" FROM sessions WHERE session_id = {session_id};
+        SELECT team_id FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id AND teams.team_name = "{team_name}";
+    """)
+    log(mysql_cursor, session_id, "CREATE team")
+    return mysql_cursor.fetchone()
 
 # remove_team - removes an existing team
 # connector mysql_cursor - the link to the database
@@ -107,7 +120,11 @@ def new_team(mysql_cursor, session_id):
 # int team_id - the team to add the pokemon to
 # returns nothing
 def remove_team(mysql_cursor, session_id, team_id):
-    pass
+    mysql_cursor.execute(
+    f"""
+        DELETE FROM teams WHERE team_id = {team_id};
+    """)
+    log(mysql_cursor, session_id, "DELETE team")
 
 # get_pokemon_details - gets the details about a pokemon
 # connector mysql_cursor - the link to the database
@@ -115,7 +132,12 @@ def remove_team(mysql_cursor, session_id, team_id):
 # int pokemon_id - the pokemon to update
 # returns - the pokemon's details
 def get_pokemon_details(mysql_cursor, session_id, pokemon_id):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM pokemon WHERE pokemon_id = "{pokemon_id}";
+    """)
+    log(mysql_cursor, session_id, "SEARCH pokemon")
+    return mysql_cursor.fetchone()
 
 # new_pokemon - creates a new pokemon
 # connector mysql_cursor - the link to the database
@@ -132,7 +154,7 @@ def get_pokemon_details(mysql_cursor, session_id, pokemon_id):
 # int | None move_3 - the pokemon's third move
 # int | None move_4 - the pokemon's fourth move
 # returns int - the pokemon's id
-def new_pokemon(mysql_cursor, session_id, team_id, form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4):
+def new_pokemon(mysql_cursor, session_id, team_id, form_id, gender, nature_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
     pass
 
 # update_pokemon - updates an existing pokemon
@@ -149,9 +171,25 @@ def new_pokemon(mysql_cursor, session_id, team_id, form_id, nickname, gender, na
 # int | None move_2 - the pokemon's second move
 # int | None move_3 - the pokemon's third move
 # int | None move_4 - the pokemon's fourth move
-# returns int - the pokemon's id
-def update_pokemon(mysql_cursor, session_id, pokemon_id, form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4):
-    pass
+# returns nothing
+def update_pokemon(mysql_cursor, session_id, pokemon_id, form_id, gender, nature_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
+    mysql_cursor.execute(
+    f"""
+        UPDATE pokemon
+        SET 
+            form_id = {form_id}, 
+            gender = {None if gender == 'N' else '"' + gender + '"'}, 
+            nature_id = {nature_id}, 
+            nickname = "{nickname}", 
+            ability_id = {ability_id}, 
+            item_id = {item_id}, 
+            move_1 = {move_1}, 
+            move_2 = {move_2}, 
+            move_3 = {move_3}, 
+            move_4 = {move_4}
+        WHERE pokemon_id = {pokemon_id};
+    """)
+    log(mysql_cursor, session_id, "UPDATE pokemon")
 
 # remove_pokemon - removes an existing pokemon
 # connector mysql_cursor - the link to the database
@@ -159,15 +197,24 @@ def update_pokemon(mysql_cursor, session_id, pokemon_id, form_id, nickname, gend
 # int pokemon_id - the current pokemon
 # returns nothing
 def remove_pokemon(mysql_cursor, session_id, pokemon_id):
-    pass
+    mysql_cursor.execute(
+    f"""
+        DELETE FROM pokemon WHERE pokemon_id = {pokemon_id};
+    """)
+    log(mysql_cursor, session_id, "DELETE pokemon")
 
 # search_forms - searches for pokemon forms by name
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # string name - the name to search by
 # returns - the list of relavant results
-def search_forms(mysql_cursor, session_id):
-    pass
+def search_forms(mysql_cursor, session_id, name):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM forms WHERE form_name LIKE "%{name}%";
+    """)
+    log(mysql_cursor, session_id, "SEARCH forms")
+    return mysql_cursor.fetchall()
 
 # search_items - searches for items by name
 # connector mysql_cursor - the link to the database
@@ -175,17 +222,29 @@ def search_forms(mysql_cursor, session_id):
 # string name - the name to search by
 # returns - the list of relavant results
 def search_items(mysql_cursor, session_id, name):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM items WHERE item_name LIKE "%{name}%";
+    """)
+    log(mysql_cursor, session_id, "SEARCH items")
+    return mysql_cursor.fetchall()
 
 # search_moves - searches for moves by pokemon, optional level, optional name
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # int form_id - the form of the pokemon
-# int | None pokemon_level - the pokemon's level
-# string | None name - the name to search by
+# string name - the name to search by (optional)
 # returns - the list of relavant results
-def search_moves(mysql_cursor, session_id, form_id, pokemon_level, name):
-    pass
+def search_moves(mysql_cursor, session_id, form_id, name = ""):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM 
+            form_move INNER JOIN moves ON form_move.move_id = moves.move_id 
+        WHERE 
+            form_move.form_id = {form_id} AND moves.move_name LIKE "%{name}%";
+    """)
+    log(mysql_cursor, session_id, "SEARCH moves")
+    return mysql_cursor.fetchall()
 
 # search_natures - searches for natures by name
 # connector mysql_cursor - the link to the database
@@ -193,4 +252,9 @@ def search_moves(mysql_cursor, session_id, form_id, pokemon_level, name):
 # string name - the name to search by
 # returns - the list of relavant results
 def search_natures(mysql_cursor, session_id, name):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM natures WHERE nature_name LIKE "%{name}%";
+    """)
+    log(mysql_cursor, session_id, "SEARCH natures")
+    return mysql_cursor.fetchall()
