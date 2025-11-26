@@ -9,7 +9,7 @@ CREATE TABLE
 CREATE TABLE
 	user_auth(
 		user_id INT UNIQUE NOT NULL,
-        email VARCHAR(256) NOT NULL,
+        email VARCHAR(256) UNIQUE NOT NULL,
         hashed_password VARCHAR(256) NOT NULL,
 		FOREIGN KEY (user_id) REFERENCES users(user_id)
 	);
