@@ -276,3 +276,12 @@ def search_natures(mysql_cursor, session_id, name):
     """)
     log(mysql_cursor, session_id, "SEARCH natures")
     return mysql_cursor.fetchall()
+
+# part 3
+# update move popularity
+# update pokemon popularity
+# update item popularity
+# update type popularity
+# get image
+# find wondertrade
+# get hatching steps
