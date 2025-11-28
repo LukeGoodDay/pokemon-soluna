@@ -100,29 +100,42 @@ def get_user_teams(mysql_cursor, session_id):
     log(mysql_cursor, session_id, "SEARCH teams")
     return mysql_cursor.fetchall()
 
+# get_team_pokemon - gets all pokemon on a specific team
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int team_id - the team to querry
+# returns - the list of the pokemon on the team
+def get_user_teams(mysql_cursor, session_id, team_id):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM pokemon WHERE team_id = {team_id};
+    """)
+    log(mysql_cursor, session_id, "SEARCH team pokemon")
+    return mysql_cursor.fetchall()
+
 # new_team - creates a new team for the current user
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # string team_name - the name of the team (max 30 char)
-# returns int - the team id
+# returns nothing
 def new_team(mysql_cursor, session_id, team_name):
     mysql_cursor.execute(
     f"""
         INSERT teams(user_id, team_name) SELECT user_id, "{team_name}" FROM sessions WHERE session_id = {session_id};
-        SELECT team_id FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id AND teams.team_name = "{team_name}";
     """)
     log(mysql_cursor, session_id, "CREATE team")
-    return mysql_cursor.fetchone()
 
 # remove_team - removes an existing team
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
-# int team_id - the team to add the pokemon to
+# int team_id - the team to remove
 # returns nothing
 def remove_team(mysql_cursor, session_id, team_id):
     mysql_cursor.execute(
     f"""
         DELETE FROM teams WHERE team_id = {team_id};
+
+        DELETE FROM pokemon WHERE team_id = {team_id};
     """)
     log(mysql_cursor, session_id, "DELETE team")
 
@@ -142,58 +155,25 @@ def get_pokemon_details(mysql_cursor, session_id, pokemon_id):
 # new_pokemon - creates a new pokemon
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
-# int team_id - the team to add the pokemon to (1-6)
-# int team_slot - the slot on the team this pokemon will take
 # int form_id - which pokemon this is
 # string | None nickname - the nickname of the pokemon (max 12 char)
 # char gender - the pokemon's gender ('M", 'F', 'N')
 # int nature_id - the pokemon's nature
+# int team_id - the team to add the pokemon to (1-6)
 # int | None ability_id - the pokemon's ability
 # int | None item_id - the pokemon's held item
 # int | None move_1 - the pokemon's first move
 # int | None move_2 - the pokemon's second move
 # int | None move_3 - the pokemon's third move
 # int | None move_4 - the pokemon's fourth move
-# returns int - the pokemon's id
-def new_pokemon(mysql_cursor, session_id, team_id, team_slot, form_id, gender, nature_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
+# returns nothing
+def new_pokemon(mysql_cursor, session_id, form_id, gender, nature_id, team_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
     mysql_cursor.execute(
     f"""
-        INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4)
-        VALUES ({form_id}, {nickname}, {None if gender == 'N' else '"' + gender + '"'}, {nature_id}, {ability_id}, {item_id}, {move_1}, {move_2} {move_3} {move_4});
-        
-        UPDATE teams
-        SET pokemon_{team_slot} = (
-            SELECT pokemon_id FROM pokemon 
-            WHERE 
-                form_id = {form_id} AND 
-                nickname = {nickname} AND 
-                gender = {None if gender == 'N' else '"' + gender + '"'} AND 
-                nature_id = {nature_id} AND 
-                ability_id = {ability_id} AND
-                item_id = {item_id} AND
-                move_1 = {move_1} AND
-                move_2 = {move_2} AND
-                move_3 = {move_3} AND
-                move_4 = {move_4};
-            LIMIT 1
-        ) as p_id
-        WHERE team_id = {team_id}
-
-        SELECT pokemon_id FROM pokemon 
-        WHERE 
-            form_id = {form_id} AND 
-            nickname = {nickname} AND 
-            gender = {None if gender == 'N' else '"' + gender + '"'} AND 
-            nature_id = {nature_id} AND 
-            ability_id = {ability_id} AND
-            item_id = {item_id} AND
-            move_1 = {move_1} AND
-            move_2 = {move_2} AND
-            move_3 = {move_3} AND
-            move_4 = {move_4};
+        INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
+        VALUES ({form_id}, {nickname}, {None if gender == 'N' else '"' + gender + '"'}, {nature_id}, {ability_id}, {item_id}, {move_1}, {move_2}, {move_3}, {move_4}, {team_id});
     """)
     log(mysql_cursor, session_id, "CREATE pokemon")
-    return mysql_cursor.fetchone()
 
 # update_pokemon - updates an existing pokemon
 # connector mysql_cursor - the link to the database
