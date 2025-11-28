@@ -169,7 +169,15 @@ CREATE TABLE
         special_defense_mult FLOAT NOT NULL,
         speed_mult FLOAT NOT NULL
     );
-    
+
+CREATE TABLE
+	teams(
+		team_id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        team_name VARCHAR(30) NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    );
+
 CREATE TABLE
 	pokemon(
 		pokemon_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -183,6 +191,7 @@ CREATE TABLE
         move_2 INT,
         move_3 INT,
         move_4 INT,
+		team_id INT NOT NULL,
         FOREIGN KEY (form_id) REFERENCES forms(form_id),
         FOREIGN KEY (nature_id) REFERENCES natures(nature_id),
         FOREIGN KEY (ability_id) REFERENCES abilities(ability_id),
@@ -190,27 +199,8 @@ CREATE TABLE
         FOREIGN KEY (move_1) REFERENCES moves(move_id),
         FOREIGN KEY (move_2) REFERENCES moves(move_id),
         FOREIGN KEY (move_3) REFERENCES moves(move_id),
-        FOREIGN KEY (move_4) REFERENCES moves(move_id)
-    );
-
-CREATE TABLE
-	teams(
-		team_id INT PRIMARY KEY AUTO_INCREMENT,
-        user_id INT NOT NULL,
-        team_name VARCHAR(30) NOT NULL,
-        pokemon_1 INT,
-        pokemon_2 INT,
-        pokemon_3 INT,
-        pokemon_4 INT,
-        pokemon_5 INT,
-        pokemon_6 INT,
-        FOREIGN KEY (user_id) REFERENCES users(user_id),
-        FOREIGN KEY (pokemon_1) REFERENCES pokemon(pokemon_id),
-        FOREIGN KEY (pokemon_2) REFERENCES pokemon(pokemon_id),
-        FOREIGN KEY (pokemon_3) REFERENCES pokemon(pokemon_id),
-        FOREIGN KEY (pokemon_4) REFERENCES pokemon(pokemon_id),
-        FOREIGN KEY (pokemon_5) REFERENCES pokemon(pokemon_id),
-        FOREIGN KEY (pokemon_6) REFERENCES pokemon(pokemon_id)
+        FOREIGN KEY (move_4) REFERENCES moves(move_id),
+		FOREIGN KEY (team_id) REFERENCES teams(team_id)
     );
 
 CREATE TABLE
