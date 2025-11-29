@@ -289,7 +289,12 @@ def update_move_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the move popularity table
 def get_move_popularity(mysql_cursor, session_id : int):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM move_popularity;
+    """)
+    log(mysql_cursor, session_id, "SEARCH move_popularity")
+    return mysql_cursor.fetchall()
 
 # update_pokemon_popularity - updates the data in the pokemon popularity table
 # connector mysql_cursor - the link to the database
@@ -303,7 +308,12 @@ def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the pokemon popularity table
 def get_pokemon_popularity(mysql_cursor, session_id : int):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM pokemon_popularity;
+    """)
+    log(mysql_cursor, session_id, "SEARCH pokemon_popularity")
+    return mysql_cursor.fetchall()
 
 # update_item_popularity - updates the data in the item popularity table
 # connector mysql_cursor - the link to the database
@@ -317,7 +327,12 @@ def update_item_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the item popularity table
 def get_item_popularity(mysql_cursor, session_id : int):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM item_popularity;
+    """)
+    log(mysql_cursor, session_id, "SEARCH item_popularity")
+    return mysql_cursor.fetchall()
 
 # update_type_popularity - updates the data in the type popularity table
 # connector mysql_cursor - the link to the database
@@ -331,7 +346,12 @@ def update_type_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the type popularity table
 def get_type_popularity(mysql_cursor, session_id : int):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM type_popularity;
+    """)
+    log(mysql_cursor, session_id, "SEARCH type_popularity")
+    return mysql_cursor.fetchall()
 
 # get_image - gets the image of a pokemon
 # connector mysql_cursor - the link to the database
@@ -347,7 +367,12 @@ def get_image(mysql_cursor, session_id : int, form_id : int):
 # int form_id - the form id of the pokemon
 # returns the wondertrade if found otherwise None
 def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM wonder_trades WHERE form_id = {form_id};
+    """)
+    log(mysql_cursor, session_id, "SEARCH wonder_trades")
+    return mysql_cursor.fetchone()
 
 # get_hatching_steps - gets the number of steps to hatch an egg
 # connector mysql_cursor - the link to the database
@@ -355,4 +380,9 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
 # int species_id - the species id of the pokemon
 # returns the number of steps to hatch the pokemon
 def get_hatching_steps(mysql_cursor, session_id : int, species_id : int) -> int:
-    pass
+    mysql_cursor.execute(
+    f"""
+        SELECT steps FROM hatching WHERE species_id = {species_id};
+    """)
+    log(mysql_cursor, session_id, "SEARCH hatching")
+    return mysql_cursor.fetchone()
