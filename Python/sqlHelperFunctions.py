@@ -352,7 +352,7 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
 # get_hatching_steps - gets the number of steps to hatch an egg
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
-# int form_id - the form id of the pokemon
+# int species_id - the species id of the pokemon
 # returns the number of steps to hatch the pokemon
-def get_hatching_steps(mysql_cursor, session_id : int, form_id : int) -> int:
+def get_hatching_steps(mysql_cursor, session_id : int, species_id : int) -> int:
     pass
