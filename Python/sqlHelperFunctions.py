@@ -6,7 +6,7 @@ import hashlib
 # int session_id - the current session token
 # string action_taken - what the user did (30 char max)
 # returns nothing
-def log(mysql_cursor, session_id, action_taken):
+def log(mysql_cursor, session_id : int, action_taken : str) -> None:
     mysql_cursor.execute(
     f"""
         INSERT activity_log(session_id, action_taken, action_time) VALUES ("{session_id}", "{action_taken}", "{datetime.now()}");
@@ -18,7 +18,7 @@ def log(mysql_cursor, session_id, action_taken):
 # string email - the email of the user (265 char max must be unique)
 # password - the password of the user (256 char max)
 # returns int - a session token
-def register(mysql_cursor, username, email, password):
+def register(mysql_cursor, username : str, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
         INSERT users(username) SELECT "{username}";
@@ -54,7 +54,7 @@ def register(mysql_cursor, username, email, password):
 # string email - the email of the user (265 char max must be unique)
 # password - the password of the user (256 char max)
 # returns int - a session token
-def login(mysql_cursor, email, password):
+def login(mysql_cursor, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
         INSERT
@@ -81,7 +81,7 @@ def login(mysql_cursor, email, password):
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # returns nothing
-def logout(mysql_cursor, session_id):
+def logout(mysql_cursor, session_id : int) -> None:
     mysql_cursor.execute(
     f"""
         UPDATE sessions SET ended = "{datetime.now()}" WHERE session_id = {session_id};
@@ -91,7 +91,7 @@ def logout(mysql_cursor, session_id):
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # returns - the list of the active user's teams
-def get_user_teams(mysql_cursor, session_id):
+def get_user_teams(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
         SELECT team_id, user_id, team_name, pokemon_1, pokemon_2, pokemon_3, pokemon_4, pokemon_5, pokemon_6
@@ -105,7 +105,7 @@ def get_user_teams(mysql_cursor, session_id):
 # int session_id - the current session token
 # int team_id - the team to querry
 # returns - the list of the pokemon on the team
-def get_user_teams(mysql_cursor, session_id, team_id):
+def get_user_teams(mysql_cursor, session_id : int, team_id : int):
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE team_id = {team_id};
@@ -118,7 +118,7 @@ def get_user_teams(mysql_cursor, session_id, team_id):
 # int session_id - the current session token
 # string team_name - the name of the team (max 30 char)
 # returns nothing
-def new_team(mysql_cursor, session_id, team_name):
+def new_team(mysql_cursor, session_id : int, team_name : str) -> None:
     mysql_cursor.execute(
     f"""
         INSERT teams(user_id, team_name) SELECT user_id, "{team_name}" FROM sessions WHERE session_id = {session_id};
@@ -130,7 +130,7 @@ def new_team(mysql_cursor, session_id, team_name):
 # int session_id - the current session token
 # int team_id - the team to remove
 # returns nothing
-def remove_team(mysql_cursor, session_id, team_id):
+def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
     mysql_cursor.execute(
     f"""
         DELETE FROM teams WHERE team_id = {team_id};
@@ -144,7 +144,7 @@ def remove_team(mysql_cursor, session_id, team_id):
 # int session_id - the current session token
 # int pokemon_id - the pokemon to update
 # returns - the pokemon's details
-def get_pokemon_details(mysql_cursor, session_id, pokemon_id):
+def get_pokemon_details(mysql_cursor, session_id : int, pokemon_id : int):
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE pokemon_id = "{pokemon_id}";
@@ -167,7 +167,7 @@ def get_pokemon_details(mysql_cursor, session_id, pokemon_id):
 # int | None move_3 - the pokemon's third move
 # int | None move_4 - the pokemon's fourth move
 # returns nothing
-def new_pokemon(mysql_cursor, session_id, form_id, gender, nature_id, team_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
+def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nature_id : int, team_id : int, nickname : str = None, ability_id : int = None, item_id : int = None, move_1 : int = None, move_2 : int = None, move_3 : int = None, move_4 : int = None) -> None:
     mysql_cursor.execute(
     f"""
         INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
@@ -190,7 +190,7 @@ def new_pokemon(mysql_cursor, session_id, form_id, gender, nature_id, team_id, n
 # int | None move_3 - the pokemon's third move
 # int | None move_4 - the pokemon's fourth move
 # returns nothing
-def update_pokemon(mysql_cursor, session_id, pokemon_id, form_id, gender, nature_id, nickname = None, ability_id = None, item_id = None, move_1 = None, move_2 = None, move_3 = None, move_4 = None):
+def update_pokemon(mysql_cursor, session_id : int, pokemon_id : int, form_id : int, gender : str, nature_id : int, nickname : str = None, ability_id : int = None, item_id : int = None, move_1 : int = None, move_2 : int = None, move_3 : int = None, move_4 : int = None) -> None:
     mysql_cursor.execute(
     f"""
         UPDATE pokemon
@@ -214,7 +214,7 @@ def update_pokemon(mysql_cursor, session_id, pokemon_id, form_id, gender, nature
 # int session_id - the current session token
 # int pokemon_id - the current pokemon
 # returns nothing
-def remove_pokemon(mysql_cursor, session_id, pokemon_id):
+def remove_pokemon(mysql_cursor, session_id : int, pokemon_id : int) -> None:
     mysql_cursor.execute(
     f"""
         DELETE FROM pokemon WHERE pokemon_id = {pokemon_id};
@@ -226,7 +226,7 @@ def remove_pokemon(mysql_cursor, session_id, pokemon_id):
 # int session_id - the current session token
 # string name - the name to search by
 # returns - the list of relavant results
-def search_forms(mysql_cursor, session_id, name):
+def search_forms(mysql_cursor, session_id : int, name : str):
     mysql_cursor.execute(
     f"""
         SELECT * FROM forms WHERE form_name LIKE "%{name}%";
@@ -239,7 +239,7 @@ def search_forms(mysql_cursor, session_id, name):
 # int session_id - the current session token
 # string name - the name to search by
 # returns - the list of relavant results
-def search_items(mysql_cursor, session_id, name):
+def search_items(mysql_cursor, session_id : int, name : str):
     mysql_cursor.execute(
     f"""
         SELECT * FROM items WHERE item_name LIKE "%{name}%";
@@ -253,7 +253,7 @@ def search_items(mysql_cursor, session_id, name):
 # int form_id - the form of the pokemon
 # string name - the name to search by (optional)
 # returns - the list of relavant results
-def search_moves(mysql_cursor, session_id, form_id, name = ""):
+def search_moves(mysql_cursor, session_id : int, form_id : int, name : str = ""):
     mysql_cursor.execute(
     f"""
         SELECT * FROM 
@@ -269,7 +269,7 @@ def search_moves(mysql_cursor, session_id, form_id, name = ""):
 # int session_id - the current session token
 # string name - the name to search by
 # returns - the list of relavant results
-def search_natures(mysql_cursor, session_id, name):
+def search_natures(mysql_cursor, session_id : int, name : str):
     mysql_cursor.execute(
     f"""
         SELECT * FROM natures WHERE nature_name LIKE "%{name}%";
@@ -277,11 +277,82 @@ def search_natures(mysql_cursor, session_id, name):
     log(mysql_cursor, session_id, "SEARCH natures")
     return mysql_cursor.fetchall()
 
-# part 3
-# update move popularity
-# update pokemon popularity
-# update item popularity
-# update type popularity
-# get image
-# find wondertrade
-# get hatching steps
+# update_move_popularity - updates the data in the move popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns nothing
+def update_move_popularity(mysql_cursor, session_id : int) -> None:
+    pass
+
+# get_move_popularity - gets the data in the move popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns the move popularity table
+def get_move_popularity(mysql_cursor, session_id : int):
+    pass
+
+# update_pokemon_popularity - updates the data in the pokemon popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns nothing
+def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
+    pass
+
+# get_pokemon_popularity - gets the data in the pokemon popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns the pokemon popularity table
+def get_pokemon_popularity(mysql_cursor, session_id : int):
+    pass
+
+# update_item_popularity - updates the data in the item popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns nothing
+def update_item_popularity(mysql_cursor, session_id : int) -> None:
+    pass
+
+# get_item_popularity - gets the data in the item popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns the item popularity table
+def get_item_popularity(mysql_cursor, session_id : int):
+    pass
+
+# update_type_popularity - updates the data in the type popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns nothing
+def update_type_popularity(mysql_cursor, session_id : int) -> None:
+    pass
+
+# get_type_popularity - gets the data in the type popularity table
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns the type popularity table
+def get_type_popularity(mysql_cursor, session_id : int):
+    pass
+
+# get_image - gets the image of a pokemon
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int form_id - the form id of the pokemon
+# returns the image of the form
+def get_image(mysql_cursor, session_id : int, form_id : int):
+    pass
+
+# find_wondertrade - tries to find a wondertrade for the specified pokemon
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int form_id - the form id of the pokemon
+# returns the wondertrade if found otherwise None
+def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
+    pass
+
+# get_hatching_steps - gets the number of steps to hatch an egg
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int form_id - the form id of the pokemon
+# returns the number of steps to hatch the pokemon
+def get_hatching_steps(mysql_cursor, session_id : int, form_id : int) -> int:
+    pass
