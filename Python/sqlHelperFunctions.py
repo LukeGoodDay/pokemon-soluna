@@ -24,7 +24,7 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
         INSERT users(username) SELECT "{username}";
 
         INSERT 
-            user_auth (user_id email, hashed_password)
+            user_auth (user_id, email, hashed_password)
         SELECT
             user_id,
             "{email}",
@@ -94,8 +94,7 @@ def logout(mysql_cursor, session_id : int) -> None:
 def get_user_teams(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT team_id, user_id, team_name, pokemon_1, pokemon_2, pokemon_3, pokemon_4, pokemon_5, pokemon_6
-        FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
+        SELECT team_id, user_id, team_name FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
     """)
     log(mysql_cursor, session_id, "SEARCH teams")
     return mysql_cursor.fetchall()
