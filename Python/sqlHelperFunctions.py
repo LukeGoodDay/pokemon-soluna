@@ -141,13 +141,26 @@ def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
 # get_pokemon_details - gets the details about a pokemon
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
-# int pokemon_id - the pokemon to update
+# int pokemon_id - the pokemon to check
 # returns - the pokemon's details
 def get_pokemon_details(mysql_cursor, session_id : int, pokemon_id : int):
     log(mysql_cursor, session_id, "SEARCH pokemon")
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE pokemon_id = {pokemon_id};
+    """)
+    return mysql_cursor.fetchone()
+
+# get_form_details - gets the details about a pokemon form
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int form_id - the form to check
+# returns - the form's details
+def get_form_details(mysql_cursor, session_id : int, form_id : int):
+    log(mysql_cursor, session_id, "SEARCH forms")
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM forms NATURAL JOIN form_info WHERE form_id = {form_id};
     """)
     return mysql_cursor.fetchone()
 
