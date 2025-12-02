@@ -92,7 +92,6 @@ def logout(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns - the list of the active user's teams
 def get_user_teams(mysql_cursor, session_id : int):
-    log(mysql_cursor, session_id, "SEARCH teams")
     mysql_cursor.execute(
     f"""
         SELECT team_id, user_id, team_name FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
@@ -105,7 +104,6 @@ def get_user_teams(mysql_cursor, session_id : int):
 # int team_id - the team to querry
 # returns - the list of the pokemon on the team
 def get_user_teams(mysql_cursor, session_id : int, team_id : int):
-    log(mysql_cursor, session_id, "SEARCH team pokemon")
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE team_id = {team_id};
@@ -144,7 +142,6 @@ def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
 # int pokemon_id - the pokemon to check
 # returns - the pokemon's details
 def get_pokemon_details(mysql_cursor, session_id : int, pokemon_id : int):
-    log(mysql_cursor, session_id, "SEARCH pokemon")
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE pokemon_id = {pokemon_id};
@@ -157,7 +154,6 @@ def get_pokemon_details(mysql_cursor, session_id : int, pokemon_id : int):
 # int form_id - the form to check
 # returns - the form's details
 def get_form_details(mysql_cursor, session_id : int, form_id : int):
-    log(mysql_cursor, session_id, "SEARCH forms")
     mysql_cursor.execute(
     f"""
         SELECT * FROM forms NATURAL JOIN form_info WHERE form_id = {form_id};
@@ -239,7 +235,6 @@ def remove_pokemon(mysql_cursor, session_id : int, pokemon_id : int) -> None:
 # string name - the name to search by
 # returns - the list of relavant results
 def search_forms(mysql_cursor, session_id : int, name : str):
-    log(mysql_cursor, session_id, "SEARCH forms")
     mysql_cursor.execute(
     f"""
         SELECT * FROM forms WHERE form_name LIKE "%{name}%";
@@ -252,7 +247,6 @@ def search_forms(mysql_cursor, session_id : int, name : str):
 # string name - the name to search by
 # returns - the list of relavant results
 def search_items(mysql_cursor, session_id : int, name : str):
-    log(mysql_cursor, session_id, "SEARCH items")
     mysql_cursor.execute(
     f"""
         SELECT * FROM items WHERE item_name LIKE "%{name}%";
@@ -266,7 +260,6 @@ def search_items(mysql_cursor, session_id : int, name : str):
 # string name - the name to search by (optional)
 # returns - the list of relavant results
 def search_moves(mysql_cursor, session_id : int, form_id : int, name : str = ""):
-    log(mysql_cursor, session_id, "SEARCH moves")
     mysql_cursor.execute(
     f"""
         SELECT * FROM 
@@ -282,10 +275,21 @@ def search_moves(mysql_cursor, session_id : int, form_id : int, name : str = "")
 # string name - the name to search by
 # returns - the list of relavant results
 def search_natures(mysql_cursor, session_id : int, name : str):
-    log(mysql_cursor, session_id, "SEARCH natures")
     mysql_cursor.execute(
     f"""
         SELECT * FROM natures WHERE nature_name LIKE "%{name}%";
+    """)
+    return mysql_cursor.fetchall()
+
+# lookup_ability - searches for abilities by id
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int ability_id - the id to search by
+# returns - the ability detaiu=ls
+def lookup_ability(mysql_cursor, session_id : int, ability_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM abilities WHERE ability_id = {ability_id};
     """)
     return mysql_cursor.fetchall()
 
@@ -326,7 +330,6 @@ def update_move_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the move popularity table
 def get_move_popularity(mysql_cursor, session_id : int):
-    log(mysql_cursor, session_id, "SEARCH move_popularity")
     mysql_cursor.execute(
     f"""
         SELECT * FROM move_popularity;
@@ -364,7 +367,6 @@ def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the pokemon popularity table
 def get_pokemon_popularity(mysql_cursor, session_id : int):
-    log(mysql_cursor, session_id, "SEARCH pokemon_popularity")
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon_popularity;
@@ -402,7 +404,6 @@ def update_item_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the item popularity table
 def get_item_popularity(mysql_cursor, session_id : int):
-    log(mysql_cursor, session_id, "SEARCH item_popularity")
     mysql_cursor.execute(
     f"""
         SELECT * FROM item_popularity;
@@ -440,7 +441,6 @@ def update_type_popularity(mysql_cursor, session_id : int) -> None:
 # int session_id - the current session token
 # returns the type popularity table
 def get_type_popularity(mysql_cursor, session_id : int):
-    log(mysql_cursor, session_id, "SEARCH type_popularity")
     mysql_cursor.execute(
     f"""
         SELECT * FROM type_popularity;
@@ -461,7 +461,6 @@ def get_image(mysql_cursor, session_id : int, form_id : int):
 # int form_id - the form id of the pokemon
 # returns the wondertrade if found otherwise None
 def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
-    log(mysql_cursor, session_id, "SEARCH wonder_trades")
     mysql_cursor.execute(
     f"""
         SELECT * FROM wonder_trades WHERE form_id = {form_id};
@@ -474,7 +473,6 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
 # int species_id - the species id of the pokemon
 # returns the number of steps to hatch the pokemon
 def get_hatching_steps(mysql_cursor, session_id : int, species_id : int) -> int:
-    log(mysql_cursor, session_id, "SEARCH hatching")
     mysql_cursor.execute(
     f"""
         SELECT steps FROM hatching WHERE species_id = {species_id};
