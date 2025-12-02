@@ -212,6 +212,7 @@ LARGEFONT =("Verdana", 35)
  
 class tkinterApp(tk.Tk):
     cursor = 0
+    session = 1
     # __init__ function for class tkinterApp 
     def __init__(self, *args, **kwargs): 
         
@@ -245,7 +246,7 @@ class tkinterApp(tk.Tk):
     
     def initCursor(self, conn):
         self.cursor = conn.cursor(buffered=True)
-        self.frames[PokeEditPage].load_values()
+        self.frames[PokeEditPage].load(1)
  
     # to display the current frame passed as
     # parameter
@@ -428,18 +429,43 @@ class PokeEditPage(tk.Frame):
         self.pokeid = pokeid
         # If editing existing pokemon
         if self.pokeid != 0:
-            pokemon = sql.get_pokemon_details(self.control.cursor, 1, self.pokeid)
-            self.name.set(pokemon[4])
-            self.gender.set(pokemon[5])
+            pokemon = sql.get_pokemon_details(self.control.cursor, self.control.session, self.pokeid)
+            print(pokemon)
+            forminfo = sql.get_form_details(self.control.cursor, self.control.session, pokemon[1])
+            self.form.set(forminfo[2])
+            self.name.delete(0, tk.END)
+            if pokemon[2] is not None:
+                self.name.insert(0, pokemon[2])
+            natureinfo = sql.get_nature_details(self.control.cursor, self.control.session, pokemon[4])
+            self.nature.set(natureinfo[1])
+            abilityinfo = sql.get_ability_details(self.control.cursor, self.control.session, pokemon[5])
+            self.ability.set(abilityinfo[1])
+            if pokemon[6] is not None:
+                iteminfo = sql.get_item_details(self.control.cursor, self.control.session, pokemon[6])
+                self.item.set(iteminfo[1])
+            else:
+                self.item.set('')
+            self.load_values()
+            gender = pokemon[3]
+            if gender is not None:
+                self.gender.set(gender)
+        else:
+            self.form.set('')
+            self.name.delete(0, tk.END)
+            self.gender.state(["readonly"])
+            self.gender.set('M')
+            self.nature.set('')
+            self.ability.set('')
+            self.item.set('')
             self.load_values()
     
     def updateForm(self, *args):
         form = self.form.get()
-        result = sql.search_forms(self.control.cursor, 1, form)
+        result = sql.search_forms(self.control.cursor, self.control.session, form)
         form_options = [i[2] for i in result]
         self.form['values'] = form_options
         if form in form_options:
-            forminfo = sql.get_form_details(self.control.cursor, 1, result[0][1])
+            forminfo = sql.get_form_details(self.control.cursor, self.control.session, result[0][1])
             gender = forminfo[20]
             if gender is None:
                 self.gender.set('N')
@@ -449,7 +475,7 @@ class PokeEditPage(tk.Frame):
                     self.gender.set('M')
                 self.gender.state(["readonly"])
             abilityids = list(forminfo[11:14])
-            abilities = [""]
+            abilities = []
             id = 0
             if abilityids[id] is not None and abilityids[id] != abilityids[id+1]:
                 abilities.append(sql.lookup_ability(self.control.cursor, 1, abilityids[id])[0][1])
@@ -500,12 +526,15 @@ class PokeEditPage(tk.Frame):
     
     def validate(self):
         ids = self.updateForm()
-        if len(ids) == 0:
+        if ids is None:
             self.errortxt['text'] = 'Invalid Pokemon Form'
             return
         nature = self.updateNature()
         if nature is None:
             self.errortxt['text'] = 'Invalid Nature'
+            return
+        if ids[1] is None:
+            self.errortxt['text'] = 'Please Select an Ability'
             return
         item = self.updateItem()
         gender = self.gender.get()
@@ -516,8 +545,14 @@ class PokeEditPage(tk.Frame):
             nick = None
         elif len(nick) > 12:
             nick = nick[0:12]
-        sql.new_pokemon(self.control.cursor, 1, ids[0], gender, nature, 1, nick, ids[1], item)
-        print("Sucessfully created pokemon")
+        if self.pokeid == 0:
+            sql.new_pokemon(self.control.cursor, 1, ids[0], gender, nature, self.teamid, nick, ids[1], item)
+            print("Sucessfully created pokemon")
+        else:
+            sql.update_pokemon(self.control.cursor, 1, self.pokeid, ids[0], gender, nature, nick, ids[1], item)
+            print('Sucessfully updated pokemon')
+        self.errortxt['text'] = ''
+        self.load(1)
 
 
 def main():
@@ -548,8 +583,8 @@ def main():
 
     except Error as e:
         print_sql_error(e, "main")
-    except Exception as e:
-        print(f"[STD ERROR] {e}")
+    #except Exception as e:
+    #    print(f"[STD ERROR] {e}")
     finally:
         if conn and conn.is_connected():
             conn.close()
