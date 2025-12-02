@@ -228,8 +228,8 @@ def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nat
     mysql_cursor.execute(
     f"""
         INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
-        VALUES ({form_id}, "{nickname}", {None if gender == 'N' else '"' + gender + '"'}, {nature_id}, {ability_id}, {item_id}, {move_1}, {move_2}, {move_3}, {move_4}, {team_id});
-    """)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """, form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
 
 # update_pokemon - updates an existing pokemon
 # connector mysql_cursor - the link to the database
@@ -252,18 +252,18 @@ def update_pokemon(mysql_cursor, session_id : int, pokemon_id : int, form_id : i
     f"""
         UPDATE pokemon
         SET 
-            form_id = {form_id}, 
-            gender = {None if gender == 'N' else '"' + gender + '"'}, 
-            nature_id = {nature_id}, 
-            nickname = "{nickname}", 
-            ability_id = {ability_id}, 
-            item_id = {item_id}, 
-            move_1 = {move_1}, 
-            move_2 = {move_2}, 
-            move_3 = {move_3}, 
-            move_4 = {move_4}
+            form_id = %s, 
+            nickname = %s, 
+            gender = %s, 
+            nature_id = %s, 
+            ability_id = %s, 
+            item_id = %s, 
+            move_1 = %s, 
+            move_2 = %s, 
+            move_3 = %s, 
+            move_4 = %s
         WHERE pokemon_id = {pokemon_id};
-    """)
+    """, form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4)
 
 # remove_pokemon - removes an existing pokemon
 # connector mysql_cursor - the link to the database
