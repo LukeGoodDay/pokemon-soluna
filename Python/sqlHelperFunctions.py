@@ -9,7 +9,7 @@ import hashlib
 def log(mysql_cursor, session_id : int, action_taken : str) -> None:
     mysql_cursor.execute(
     f"""
-        INSERT activity_log(session_id, action_taken, action_time) VALUES ("{session_id}", "{action_taken}", "{datetime.now()}");
+        INSERT INTO activity_log(session_id, action_taken, action_time) VALUES ("{session_id}", "{action_taken}", "{datetime.now()}");
     """)
 
 # register - registers the user for the app
@@ -21,9 +21,9 @@ def log(mysql_cursor, session_id : int, action_taken : str) -> None:
 def register(mysql_cursor, username : str, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
-        INSERT users(username) SELECT "{username}";
+        INSERT INTO users(username) SELECT "{username}";
 
-        INSERT 
+        INSERT INTO
             user_auth (user_id, email, hashed_password)
         SELECT
             user_id,
@@ -57,7 +57,7 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
 def login(mysql_cursor, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
-        INSERT
+        INSERT INTO
             sessions(user_id, started, ended)
         SELECT
             user_id,
@@ -119,7 +119,7 @@ def new_team(mysql_cursor, session_id : int, team_name : str) -> None:
     log(mysql_cursor, session_id, "CREATE team")
     mysql_cursor.execute(
     f"""
-        INSERT teams(user_id, team_name) SELECT user_id, "{team_name}" FROM sessions WHERE session_id = {session_id};
+        INSERT INTO teams(user_id, team_name) SELECT user_id, "{team_name}" FROM sessions WHERE session_id = {session_id};
     """)
 
 # remove_team - removes an existing team
@@ -227,7 +227,7 @@ def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nat
     log(mysql_cursor, session_id, "CREATE pokemon")
     mysql_cursor.execute(
     f"""
-        INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
+        INSERT INTO pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, (form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id))
 
