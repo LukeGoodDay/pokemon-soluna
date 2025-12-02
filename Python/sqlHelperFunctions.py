@@ -281,7 +281,32 @@ def search_natures(mysql_cursor, session_id : int, name : str):
 # int session_id - the current session token
 # returns nothing
 def update_move_popularity(mysql_cursor, session_id : int) -> None:
-    pass
+    mysql_cursor.execute(
+    f"""
+        WITH count_table AS (
+            SELECT
+                move_id,
+                COUNT(move_id) AS count,
+                RANK() OVER (ORDER BY COUNT(move_id) DESC) AS popularity_rank,
+                (COUNT(move_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+            FROM  
+            (
+                SELECT *
+                FROM (VALUES ROW(form_id, pokemon.move_1), ROW(form_id, pokemon.move_2), ROW(form_id, pokemon.move_3), ROW(form_id, pokemon.move_4)) AS p (form_id, move_id)
+                WHERE p.move_id IS NOT NULL
+            )
+            GROUP BY move_id
+        )
+        UPDATE 
+            move_popularity
+        SET
+            count = count_table.count,
+            popularity_rank = count_table.popularity_rank,
+            total_percentage = count_table.total_percentage
+        WHERE
+            count_table.move_id = move_popularity.move_id;
+    """)
+    log(mysql_cursor, session_id, "UPDATE move_popularity")
 
 # get_move_popularity - gets the data in the move popularity table
 # connector mysql_cursor - the link to the database
@@ -376,7 +401,26 @@ def get_item_popularity(mysql_cursor, session_id : int):
 # int session_id - the current session token
 # returns nothing
 def update_type_popularity(mysql_cursor, session_id : int) -> None:
-    pass
+    mysql_cursor.execute(
+    f"""
+        WITH count_table AS (
+            SELECT
+                type_id,
+                COUNT(type_id) AS count,
+                RANK() OVER (ORDER BY COUNT(type_id) DESC) AS popularity_rank,
+                (COUNT(type_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+            FROM pokemon INNER JOIN forms ON pokemon.form_id = forms.form_id GROUP BY type_id
+        )
+        UPDATE 
+            type_popularity
+        SET
+            count = count_table.count,
+            popularity_rank = count_table.popularity_rank,
+            total_percentage = count_table.total_percentage
+        WHERE
+            count_table.type_id = type_popularity.type_id;
+    """)
+    log(mysql_cursor, session_id, "UPDATE type_popularity")
 
 # get_type_popularity - gets the data in the type popularity table
 # connector mysql_cursor - the link to the database
