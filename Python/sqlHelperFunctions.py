@@ -160,6 +160,54 @@ def get_form_details(mysql_cursor, session_id : int, form_id : int):
     """)
     return mysql_cursor.fetchone()
 
+# get_move_details - gets the details about a move
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int move_id - the move to check
+# returns - the move's details
+def get_move_details(mysql_cursor, session_id : int, move_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM moves WHERE move_id = {move_id};
+    """)
+    return mysql_cursor.fetchone()
+
+# get_ability_details - gets the details about an ability
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int ability_id - the ability to check
+# returns - the ability's details
+def get_ability_details(mysql_cursor, session_id : int, ability_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM abilities WHERE ability_id = {ability_id};
+    """)
+    return mysql_cursor.fetchone()
+
+# get_item_details - gets the details about an item
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int item_id - the item to check
+# returns - the item's details
+def get_item_details(mysql_cursor, session_id : int, item_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM items WHERE item_id = {item_id};
+    """)
+    return mysql_cursor.fetchone()
+
+# get_nature_details - gets the details about a nature
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int nature_id - the nature to check
+# returns - the nature's details
+def get_nature_details(mysql_cursor, session_id : int, nature_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT * FROM natures WHERE nature_id = {nature_id};
+    """)
+    return mysql_cursor.fetchone()
+
 # new_pokemon - creates a new pokemon
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
