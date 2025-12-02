@@ -302,12 +302,22 @@ def get_move_popularity(mysql_cursor, session_id : int):
 def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
     mysql_cursor.execute(
     f"""
+        WITH count_table AS (
+            SELECT
+                form_id,
+                COUNT(form_id) AS count,
+                RANK() OVER (ORDER BY COUNT(form_id) DESC) AS popularity_rank,
+                (COUNT(form_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+            FROM pokemon GROUP BY form_id
+        )
         UPDATE 
             pokemon_popularity
         SET
-            count = (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id),
-            popularity_rank = RANK() OVER (ORDER BY (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id) DESC),
-            total_percentage = (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id / (SELECT COUNT(*) FROM pokemon) * 100);
+            count = count_table.count,
+            popularity_rank = count_table.popularity_rank,
+            total_percentage = count_table.total_percentage
+        WHERE
+            count_table.form_id = pokemon_popularity.form_id;
     """)
     log(mysql_cursor, session_id, "UPDATE pokemon_popularity")
 
@@ -330,12 +340,22 @@ def get_pokemon_popularity(mysql_cursor, session_id : int):
 def update_item_popularity(mysql_cursor, session_id : int) -> None:
     mysql_cursor.execute(
     f"""
+        WITH count_table AS (
+            SELECT
+                item_id,
+                COUNT(item_id) AS count,
+                RANK() OVER (ORDER BY COUNT(item_id) DESC) AS popularity_rank,
+                (COUNT(item_id) / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100) AS total_percentage
+            FROM pokemon WHERE item_id IS NOT NULL GROUP BY item_id
+        )
         UPDATE 
             item_popularity
         SET
-            count = (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id),
-            popularity_rank = RANK() OVER (ORDER BY (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id) DESC),
-            total_percentage = (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100);
+            count = count_table.count,
+            popularity_rank = count_table.popularity_rank,
+            total_percentage = count_table.total_percentage
+        WHERE
+            count_table.item_id = item_popularity.item_id;
     """)
     log(mysql_cursor, session_id, "UPDATE item_popularity")
 
