@@ -146,7 +146,7 @@ def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
 def get_pokemon_details(mysql_cursor, session_id : int, pokemon_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM pokemon WHERE pokemon_id = "{pokemon_id}";
+        SELECT * FROM pokemon WHERE pokemon_id = {pokemon_id};
     """)
     log(mysql_cursor, session_id, "SEARCH pokemon")
     return mysql_cursor.fetchone()
@@ -170,7 +170,7 @@ def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nat
     mysql_cursor.execute(
     f"""
         INSERT pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
-        VALUES ({form_id}, {nickname}, {None if gender == 'N' else '"' + gender + '"'}, {nature_id}, {ability_id}, {item_id}, {move_1}, {move_2}, {move_3}, {move_4}, {team_id});
+        VALUES ({form_id}, "{nickname}", {None if gender == 'N' else '"' + gender + '"'}, {nature_id}, {ability_id}, {item_id}, {move_1}, {move_2}, {move_3}, {move_4}, {team_id});
     """)
     log(mysql_cursor, session_id, "CREATE pokemon")
 
