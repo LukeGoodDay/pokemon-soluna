@@ -300,7 +300,16 @@ def get_move_popularity(mysql_cursor, session_id : int):
 # int session_id - the current session token
 # returns nothing
 def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
-    pass
+    mysql_cursor.execute(
+    f"""
+        UPDATE 
+            pokemon_popularity
+        SET
+            count = (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id),
+            popularity_rank = RANK() OVER (ORDER BY (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id) DESC),
+            total_percentage = (SELECT COUNT(form_id) FROM pokemon WHERE pokemon.form_id = pokemon_popularity.form_id GROUP BY form_id / (SELECT COUNT(*) FROM pokemon) * 100);
+    """)
+    log(mysql_cursor, session_id, "UPDATE pokemon_popularity")
 
 # get_pokemon_popularity - gets the data in the pokemon popularity table
 # connector mysql_cursor - the link to the database
@@ -319,7 +328,16 @@ def get_pokemon_popularity(mysql_cursor, session_id : int):
 # int session_id - the current session token
 # returns nothing
 def update_item_popularity(mysql_cursor, session_id : int) -> None:
-    pass
+    mysql_cursor.execute(
+    f"""
+        UPDATE 
+            item_popularity
+        SET
+            count = (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id),
+            popularity_rank = RANK() OVER (ORDER BY (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id) DESC),
+            total_percentage = (SELECT COUNT(item_id) FROM pokemon WHERE pokemon.item_id = pokemon_popularity.item_id GROUP BY item_id / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100);
+    """)
+    log(mysql_cursor, session_id, "UPDATE item_popularity")
 
 # get_item_popularity - gets the data in the item popularity table
 # connector mysql_cursor - the link to the database
