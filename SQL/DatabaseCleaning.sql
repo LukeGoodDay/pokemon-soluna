@@ -57,6 +57,15 @@ FROM
 INNER JOIN type_chart ON pokemon_staging.type1 = type_chart.primary_type AND (pokemon_staging.type2 = type_chart.secondary_type OR (pokemon_staging.type2 IS NULL AND type_chart.secondary_type IS NULL))
 WHERE (pokemon_staging.ndex != 718 OR pokemon_staging.ability1 IS NOT NULL) AND (pokemon_staging.ndex != 774 OR pokemon_staging.dex1 IS NOT NULL); -- Remove Zygarde and Minior DUPS
 
+-- Images
+INSERT
+	images(form_id, image_name, image_path)
+SELECT DISTINCT
+	form_id, img_name, img_path
+FROM
+	images_staging
+INNER JOIN forms ON images_staging.forme = forms.form_name;
+
 -- Form Info
 INSERT
 	form_info(form_id, ability_1, ability_2, ability_h, weight_lbs, height_in, description_1, description_2, class, percent_male, percent_female)
