@@ -94,16 +94,16 @@ def logout(mysql_cursor, session_id : int) -> None:
 def get_user_teams(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT team_id, user_id, team_name FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
+        SELECT teams.team_id, sessions.user_id, teams.team_name FROM teams INNER JOIN sessions ON sessions.session_id = {session_id} AND teams.user_id = sessions.user_id;
     """)
     return mysql_cursor.fetchall()
 
 # get_team_pokemon - gets all pokemon on a specific team
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
-# int team_id - the team to querry
+# int team_id - the team to query
 # returns - the list of the pokemon on the team
-def get_user_teams(mysql_cursor, session_id : int, team_id : int):
+def get_team_pokemon(mysql_cursor, session_id : int, team_id : int):
     mysql_cursor.execute(
     f"""
         SELECT * FROM pokemon WHERE team_id = {team_id};

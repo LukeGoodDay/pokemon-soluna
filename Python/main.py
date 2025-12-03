@@ -242,17 +242,19 @@ class tkinterApp(tk.Tk):
  
             frame.grid(row = 0, column = 0, sticky ="nsew")
  
-        self.show_frame(PokeEditPage)
+        self.show_frame(TeamPage)
     
     def initCursor(self, conn):
         self.cursor = conn.cursor(buffered=True)
-        self.frames[PokeEditPage].load(1)
+        self.frames[TeamPage].load(1)
  
     # to display the current frame passed as
     # parameter
-    def show_frame(self, cont):
+    def show_frame(self, cont, team=1, pokemon=0):
         frame = self.frames[cont]
         frame.tkraise()
+        if self.cursor != 0:
+            frame.load(team, pokemon)
  
 # first window frame startpage
  
@@ -340,35 +342,68 @@ class HomePage(tk.Frame):
  
 # third window frame page2
 class TeamPage(tk.Frame): 
+    teamid = 0
+    pokeids = [0, 0, 0, 0, 0, 0]
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        self.control = controller
         # adding a label to the root window
-        lbl = tk.Label(self, text = "Are you a Geek?")
-        lbl.grid()
+        self.name = tk.Label(self, text = "Team Name: ")
+        self.name.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
 
-        # adding Entry Field
-        txt = tk.Entry(self, width=10)
-        txt.grid(column =1, row =0)
-        label = ttk.Label(self, text ="Page 2", font = LARGEFONT)
-        label.grid(row = 0, column = 4, padx = 10, pady = 10)
- 
-        # button to show frame 2 with text
-        # layout2
-        button1 = ttk.Button(self, text ="Page 1",
-                            command = lambda : controller.show_frame())
+        self.labels = []
+        self.edits = []
+        self.deletes = []
+        for i in range(6):
+            self.labels.append(tk.Label(self, text = f"Pokemon #{i}: Empty"))
+            self.edits.append(ttk.Button(self, text="Edit", command= lambda i=i: self.edit(i)))
+            self.deletes.append(ttk.Button(self, text="Delete", command= lambda i=i: self.delete(i)))
     
-        # putting the button in its place by 
-        # using grid
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
- 
-        # button to show frame 3 with text
-        # layout3
-        button2 = ttk.Button(self, text ="Startpage",
-                            command = lambda : controller.show_frame(LoginPage))
-    
-        # putting the button in its place by
-        # using grid
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+    def load(self, teamid, pokeid=0):
+        self.teamid = teamid
+        teams = sql.get_user_teams(self.control.cursor, self.control.session)
+        teamname = ''
+        for team in teams:
+            if team[0] == teamid:
+                teamname = team[2]
+                break
+        self.name['text'] = f"Team Name: {teamname}"
+        if teamname != '':
+            pokemons = sql.get_team_pokemon(self.control.cursor, self.control.session, teamid)
+            count = len(pokemons)
+            for i in range(6):
+                if i < count:
+                    pokemon = pokemons[i]
+                    self.pokeids[i] = pokemon[0]
+                    nick = pokemon[2]
+                    if nick is None:
+                        nick='Unnamed'
+                    self.labels[i]['text'] = f"Pokemon #{i}: {nick}"
+                    self.labels[i].grid(row=i+1, column=0, padx=10, pady=10, sticky='w')
+                    self.edits[i]['text'] = 'Edit'
+                    self.edits[i].grid(row=i+1, column=1, padx=5, pady=5)
+                    self.deletes[i].grid(row=i+1, column=2, padx=5, pady=5)
+                elif i == count:
+                    self.pokeids[i] = 0
+                    self.labels[i]['text'] = f"Pokemon #{i}: Empty"
+                    self.edits[i]['text'] = 'Create'
+                    self.labels[i].grid(row=i+1, column=0, padx=10, pady=10, sticky='w')
+                    self.edits[i].grid(row=i+1, column=1, padx=5, pady=5)
+                    self.deletes[i].grid_forget()
+                else:
+                    self.pokeids[i] = 0
+                    self.labels[i].grid_forget()
+                    self.edits[i].grid_forget()
+                    self.deletes[i].grid_forget()
+
+    def edit(self, i, *args):
+        self.control.show_frame(PokeEditPage, self.teamid, self.pokeids[i])
+
+    def delete(self, i, *args):
+        id = self.pokeids[i]
+        if id != 0:
+            sql.remove_pokemon(self.control.cursor, self.control.session, id)
+            self.load(self.teamid)
 
 # third window frame page2
 class PokeEditPage(tk.Frame): 
@@ -424,7 +459,6 @@ class PokeEditPage(tk.Frame):
         self.errortxt.grid(row = 13, column = 0, padx = 10, pady = 10)
 
     def load(self, teamid, pokeid=0):
-        # TODO Ask Kyle how to get the information based on the ids
         self.teamid = teamid
         self.pokeid = pokeid
         # If editing existing pokemon
@@ -552,7 +586,7 @@ class PokeEditPage(tk.Frame):
             sql.update_pokemon(self.control.cursor, 1, self.pokeid, ids[0], gender, nature, nick, ids[1], item)
             print('Sucessfully updated pokemon')
         self.errortxt['text'] = ''
-        self.load(1)
+        self.control.show_frame(TeamPage, self.teamid, self.pokeid)
 
 
 def main():
