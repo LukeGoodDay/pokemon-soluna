@@ -337,7 +337,7 @@ class TeamPage(tk.Frame):
         self.edits = []
         self.deletes = []
         for i in range(6):
-            self.labels.append(tk.Label(self, text = f"Pokemon #{i}: Empty"))
+            self.labels.append(tk.Label(self, text = f"Pokemon #{i+1}: Empty"))
             self.edits.append(ttk.Button(self, text="Edit", command= lambda i=i: self.edit(i)))
             self.deletes.append(ttk.Button(self, text="Delete", command= lambda i=i: self.delete(i)))
         self.back = ttk.Button(self, text="Back", command= lambda: self.control.show_frame(HomePage))
@@ -518,6 +518,7 @@ class PokeEditPage(tk.Frame):
             gender = pokemon[3]
             if gender is not None:
                 self.gender.set(gender)
+                self.gender.state(["readonly"])
         else:
             self.form.set('')
             self.name.delete(0, tk.END)
