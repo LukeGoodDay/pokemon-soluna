@@ -8,7 +8,7 @@
 &emsp;3.&emsp;Run [DatabaseTables.sql](./SQL/DatabaseTables.sql)  
 &emsp;4.&emsp;Run [DatabaseCleaning.sql](./SQL/DatabaseCleaning.sql)  
 &emsp;5.&emsp;Run [RegisterDefaultUser.sql](./SQL/RegisterDefaultUser.sql)  
-&emsp;6.&emsp;Run "pip install mysql-connector-python" in your terminal
+&emsp;6.&emsp;Run "pip install mysql-connector-python" in your terminal  
 &emsp;7.&emsp;Finally, run [Python.py](./Python/main.py)
 ## Datasets
 &emsp;•&emsp;Pokémon Sun and Moon Data - https://www.kaggle.com/datasets/mylesoneill/pokemon-sun-and-moon-gen-7-stats/data?select=pokemon.csv  
