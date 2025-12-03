@@ -87,6 +87,17 @@ def logout(mysql_cursor, session_id : int) -> None:
         UPDATE sessions SET ended = "{datetime.now()}" WHERE session_id = {session_id};
     """)
 
+# get_username - gets the user's name
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# returns - the user's name
+def get_username(mysql_cursor, session_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT user_id FROM users INNER JOIN sessions ON sessions.session_id = {session_id} AND users.user_id = sessions.user_id;
+    """)
+    return mysql_cursor.fetchone()
+
 # get_user_teams - gets all teams belonging to the current user
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
