@@ -617,7 +617,7 @@ class PokeEditPage(tk.Frame):
             self.move2['values'] = movelist
             if move in movelist:
                 idx = movelist.index(move)
-                if idx not in movevals:
+                if moves[idx][2] not in movevals:
                     movevals.append(moves[idx][2])
         if i == 3 or i == 5:
             move = self.move3.get()
@@ -626,7 +626,7 @@ class PokeEditPage(tk.Frame):
             self.move3['values'] = movelist
             if move in movelist:
                 idx = movelist.index(move)
-                if idx not in movevals:
+                if moves[idx][2] not in movevals:
                     movevals.append(moves[idx][2])
         if i == 4 or i == 5:
             move = self.move4.get()
@@ -635,7 +635,7 @@ class PokeEditPage(tk.Frame):
             self.move4['values'] = movelist
             if move in movelist:
                 idx = movelist.index(move)
-                if idx not in movevals:
+                if moves[idx][2] not in movevals:
                     movevals.append(moves[idx][2])
         movevals.append(None)
         movevals.append(None)
