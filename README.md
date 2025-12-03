@@ -2,6 +2,13 @@
 ### Team Members: Kyle Chiasson, Will Krietemeyer, Luke Welday
 ## Goal
 &emsp;Pokémon Soluna will act as a Pokémon Sun and Moon companion app. It will provide detailed information on all the Pokémon, moves, and items found throughout the game. This app will also allow users to create and save potential teams within the app to help map out their playthroughs.  
+## Set Up
+&emsp;1.&emsp;Set up MySQL Environment (https://dev.mysql.com/)  
+&emsp;2.&emsp;In your MySQL Environment, run [DatabaseStaging.sql](./SQL/DatabaseStaging.sql)  
+&emsp;3.&emsp;Run [DatabaseTables.sql](./SQL/DatabaseTables.sql)  
+&emsp;4.&emsp;Run [DatabaseCleaning.sql](./SQL/DatabaseCleaning.sql)  
+&emsp;5.&emsp;Run [RegisterDefaultUser.sql](./SQL/RegisterDefaultUser.sql)  
+&emsp;6.&emsp;Finally, run [Python.py](./Python/main.py)
 ## Datasets
 &emsp;•&emsp;Pokémon Sun and Moon Data - https://www.kaggle.com/datasets/mylesoneill/pokemon-sun-and-moon-gen-7-stats/data?select=pokemon.csv  
 &emsp;•&emsp;Pokémon Images - https://www.kaggle.com/datasets/arenagrenade/the-complete-pokemon-images-data-set  
