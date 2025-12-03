@@ -21,7 +21,7 @@ def log(mysql_cursor, session_id : int, action_taken : str) -> None:
 def register(mysql_cursor, username : str, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
-        INSERT INTO users(username) SELECT "{username}";
+        INSERT INTO users(username) VALUES("{username}");
     """)
     mysql_cursor.execute(
     f"""
