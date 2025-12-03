@@ -94,7 +94,7 @@ def logout(mysql_cursor, session_id : int) -> None:
 def get_username(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT user_id FROM users INNER JOIN sessions ON sessions.session_id = {session_id} AND users.user_id = sessions.user_id;
+        SELECT users.username FROM users INNER JOIN sessions ON sessions.session_id = {session_id} AND users.user_id = sessions.user_id;
     """)
     return mysql_cursor.fetchone()
 

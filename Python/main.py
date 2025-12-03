@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 import tkinter as tk
 from tkinter import ttk
+from tkinter import simpledialog
 import sqlHelperFunctions as sql
 
 # Configuration struct equivalent
@@ -213,6 +214,7 @@ LARGEFONT =("Verdana", 35)
 class tkinterApp(tk.Tk):
     cursor = 0
     session = 1
+    conn=1
     # __init__ function for class tkinterApp 
     def __init__(self, *args, **kwargs): 
         
@@ -242,11 +244,18 @@ class tkinterApp(tk.Tk):
  
             frame.grid(row = 0, column = 0, sticky ="nsew")
  
-        self.show_frame(TeamPage)
+        self.show_frame(HomePage)
     
     def initCursor(self, conn):
-        self.cursor = conn.cursor(buffered=True)
-        self.frames[TeamPage].load(1)
+        self.conn = conn
+        self.cursor = conn.cursor()
+        self.frames[HomePage].load()
+    
+    def closeCursor(self):
+        self.cursor.close()
+    
+    def reopenCursor(self):
+        self.cursor = self.conn.cursor()
  
     # to display the current frame passed as
     # parameter
@@ -262,84 +271,59 @@ class LoginPage(tk.Frame):
     # TODO Actually make login page
     def __init__(self, parent, controller): 
         tk.Frame.__init__(self, parent)
-        
-        # label of frame Layout 2
-        label = ttk.Label(self, text ="Startpage", font = LARGEFONT)
-        
-        # putting the grid in its place by using
-        # grid
-        label.grid(row = 0, column = 4, padx = 10, pady = 10) 
- 
-        button1 = ttk.Button(self, text ="Page 1",
-        command = lambda : controller.show_frame(Page1))
-    
-        # putting the button in its place by
-        # using grid
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
- 
-        ## button to show frame 2 with text layout2
-        button2 = ttk.Button(self, text ="Page 2",
-        command = lambda : controller.show_frame(Page2))
-    
-        # putting the button in its place by
-        # using grid
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
- 
+
+
 class RegisterPage(tk.Frame):
     # TODO Actually make register page
     def __init__(self, parent, controller): 
-        tk.Frame.__init__(self, parent)
-        
-        # label of frame Layout 2
-        label = ttk.Label(self, text ="Startpage", font = LARGEFONT)
-        
-        # putting the grid in its place by using
-        # grid
-        label.grid(row = 0, column = 4, padx = 10, pady = 10) 
- 
-        button1 = ttk.Button(self, text ="Page 1",
-        command = lambda : controller.show_frame(Page1))
-    
-        # putting the button in its place by
-        # using grid
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
- 
-        ## button to show frame 2 with text layout2
-        button2 = ttk.Button(self, text ="Page 2",
-        command = lambda : controller.show_frame(Page2))
-    
-        # putting the button in its place by
-        # using grid
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)        
+        tk.Frame.__init__(self, parent)        
  
  
 class HomePage(tk.Frame):
-    
+    teamids = []
     def __init__(self, parent, controller):
-        
         tk.Frame.__init__(self, parent)
-        label = ttk.Label(self, text ="Page 1", font = LARGEFONT)
-        label.grid(row = 0, column = 4, padx = 10, pady = 10)
- 
-        # button to show frame 2 with text
-        # layout2
-        button1 = ttk.Button(self, text ="StartPage",
-                            command = lambda : controller.show_frame(LoginPage))
+        self.control = controller
+
+        self.greet = ttk.Label(self, text='Welcome!')
+        self.greet.grid(row=0, column=0, padx=10, pady=10)
+
+        self.teamlbl = ttk.Label(self, text='Your Teams:')
+        self.teamlbl.grid(row=1, column=0, padx=5, pady=5)
+
+        # Create Combobox
+        self.teams = ttk.Combobox(self, values=[])
+        self.teams.grid(row=2, column=0, padx=5, pady=5)
+
+        self.new = ttk.Button(self, text="New Team", command=self.create)
+        self.new.grid(row=3, column=0, padx=10, pady=10)
+
+        # Bind selection event
+        self.teams.bind("<<ComboboxSelected>>", self.select)
     
-        # putting the button in its place 
-        # by using grid
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
- 
-        # button to show frame 2 with text
-        # layout2
-        button2 = ttk.Button(self, text ="Page 2",
-                            command = lambda : controller.show_frame(Page2))
-    
-        # putting the button in its place by 
-        # using grid
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10) 
- 
- 
+    def load(self, team=1, pokeid=0):
+        name = sql.get_username(self.control.cursor, self.control.session)
+        print('name', name)
+        if name is not None:
+            self.greet['text'] = f'Welcome {name[0]}!'
+        tea = sql.get_user_teams(self.control.cursor, self.control.session)
+        print('team', tea)
+        self.teams['values'] = [i[2] for i in tea]
+        self.teamids = [i[0] for i in tea]
+
+    def create(self, *args):
+        name = simpledialog.askstring("Create Team", "What is the name of your team?")
+        if name != '' and name is not None:
+            sql.new_team(self.control.cursor, self.control.session, name)
+            self.load()
+
+    def select(self, *args):
+        id = self.teams['values'].index(self.teams.get())
+        self.teams.set('')
+        teamid = self.teamids[id]
+        self.control.show_frame(TeamPage, teamid)
+   
+
 # third window frame page2
 class TeamPage(tk.Frame): 
     teamid = 0
@@ -358,6 +342,10 @@ class TeamPage(tk.Frame):
             self.labels.append(tk.Label(self, text = f"Pokemon #{i}: Empty"))
             self.edits.append(ttk.Button(self, text="Edit", command= lambda i=i: self.edit(i)))
             self.deletes.append(ttk.Button(self, text="Delete", command= lambda i=i: self.delete(i)))
+        self.back = ttk.Button(self, text="Back", command= lambda: self.control.show_frame(HomePage))
+        self.back.grid(row=7, column=0, padx=10, pady=10)
+        self.removebutton = ttk.Button(self, text="Delete", command=self.remove)
+        self.removebutton.grid(row=7, column=1, padx=10, pady=10)
     
     def load(self, teamid, pokeid=0):
         self.teamid = teamid
@@ -404,6 +392,13 @@ class TeamPage(tk.Frame):
         if id != 0:
             sql.remove_pokemon(self.control.cursor, self.control.session, id)
             self.load(self.teamid)
+    
+    def remove(self, *args):
+        sql.remove_team(self.control.cursor, self.control.session, self.teamid)
+        self.control.closeCursor()
+        self.control.reopenCursor()
+        self.control.show_frame(HomePage)
+
 
 # third window frame page2
 class PokeEditPage(tk.Frame): 
@@ -620,6 +615,7 @@ def main():
     #except Exception as e:
     #    print(f"[STD ERROR] {e}")
     finally:
+        app.closeCursor()
         if conn and conn.is_connected():
             conn.close()
             print("🔒 MySQL connection closed.")
