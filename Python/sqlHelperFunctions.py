@@ -22,7 +22,9 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
     mysql_cursor.execute(
     f"""
         INSERT INTO users(username) SELECT "{username}";
-
+    """)
+    mysql_cursor.execute(
+    f"""
         INSERT INTO
             user_auth (user_id, email, hashed_password)
         SELECT
@@ -30,7 +32,9 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
             "{email}",
             "{hashlib.sha256(password.encode('utf-8')).hexdigest()}"
         FROM users WHERE username = "{username}";
-
+    """)
+    mysql_cursor.execute(
+    f"""
         INSERT
             sessions(user_id, started, ended)
         SELECT
@@ -38,7 +42,9 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
             "{datetime.now()}",
             NULL
         FROM users WHERE username = "{username}";
-
+    """)
+    mysql_cursor.execute(
+    f"""
         SELECT 
             session_id 
         FROM 
@@ -67,7 +73,9 @@ def login(mysql_cursor, email : str, password : str) -> int:
             users 
         WHERE 
             user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}";
-
+    """)
+    mysql_cursor.execute(
+    f"""
         SELECT 
             session_id 
         FROM 
@@ -142,9 +150,11 @@ def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
     log(mysql_cursor, session_id, "DELETE team")
     mysql_cursor.execute(
     f"""
-        DELETE FROM teams WHERE team_id = {team_id};
-
         DELETE FROM pokemon WHERE team_id = {team_id};
+    """)
+    mysql_cursor.execute(
+    f"""
+        DELETE FROM teams WHERE team_id = {team_id};
     """)
 
 # get_pokemon_details - gets the details about a pokemon
