@@ -32,4 +32,5 @@
 &emsp;•&emsp;App will provide statistics on most popular Pokémon, items, moves, and types  
 &emsp;•&emsp;App will provide statistics on Wonder Trade chances
 ## Video
-[Download Video](https://raw.githubusercontent.com/LukeGoodDay/pokemon-soluna/main/checkpoint2.mp4)
+[Download Checkpoint 1 Video](https://raw.githubusercontent.com/LukeGoodDay/pokemon-soluna/main/Part%201%20Video.mp4)
+[Download Checkpoint 2 Video](https://raw.githubusercontent.com/LukeGoodDay/pokemon-soluna/main/checkpoint2.mp4)
