@@ -15,8 +15,6 @@ class DbConfig:
         self.user = user
         self.password = password
         self.database = database
-
-LARGEFONT =("Verdana", 35)
  
 def main():
     cfg = DbConfig()
