@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlHelperFunctions as sql
-from homePage import HomePage
-from pokeEditPage import PokeEditPage
+import homePage
+import pokeEditPage
 
 class TeamPage(tk.Frame): 
     teamid = 0
@@ -21,7 +21,7 @@ class TeamPage(tk.Frame):
             self.labels.append(tk.Label(self, text = f"Pokemon #{i+1}: Empty"))
             self.edits.append(ttk.Button(self, text="Edit", command= lambda i=i: self.edit(i)))
             self.deletes.append(ttk.Button(self, text="Delete", command= lambda i=i: self.delete(i)))
-        self.back = ttk.Button(self, text="Back", command= lambda: self.control.show_frame(HomePage))
+        self.back = ttk.Button(self, text="Back", command= lambda: self.control.show_frame(homePage.HomePage))
         self.back.grid(row=7, column=0, padx=10, pady=10)
         self.removebutton = ttk.Button(self, text="Delete", command=self.remove)
         self.removebutton.grid(row=7, column=1, padx=10, pady=10)
@@ -64,7 +64,7 @@ class TeamPage(tk.Frame):
                     self.deletes[i].grid_forget()
 
     def edit(self, i, *args):
-        self.control.show_frame(PokeEditPage, self.teamid, self.pokeids[i])
+        self.control.show_frame(pokeEditPage.PokeEditPage, self.teamid, self.pokeids[i])
 
     def delete(self, i, *args):
         id = self.pokeids[i]
@@ -74,4 +74,4 @@ class TeamPage(tk.Frame):
     
     def remove(self, *args):
         sql.remove_team(self.control.cursor, self.control.session, self.teamid)
-        self.control.show_frame(HomePage)
+        self.control.show_frame(homePage.HomePage)

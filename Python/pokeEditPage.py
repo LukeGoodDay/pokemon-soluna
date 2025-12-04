@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlHelperFunctions as sql
-from homePage import HomePage
-from teamPage import TeamPage
+import teamPage
 
 class PokeEditPage(tk.Frame):
     teamid = 1
@@ -87,7 +86,7 @@ class PokeEditPage(tk.Frame):
             pokemon = sql.get_pokemon_details(self.control.cursor, self.control.session, self.pokeid)
             print(pokemon)
             forminfo = sql.get_form_details(self.control.cursor, self.control.session, pokemon[1])
-            self.form.set(forminfo[2])
+            self.form.set(forminfo[3])
             self.name.delete(0, tk.END)
             if pokemon[2] is not None:
                 self.name.insert(0, pokemon[2])
@@ -164,17 +163,17 @@ class PokeEditPage(tk.Frame):
             abilities = []
             id = 0
             if abilityids[id] is not None and abilityids[id] != abilityids[id+1]:
-                abilities.append(sql.lookup_ability(self.control.cursor, 1, abilityids[id])[0][1])
+                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
             if abilityids[id] is not None:
-                abilities.append(sql.lookup_ability(self.control.cursor, 1, abilityids[id])[0][1])
+                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
             if abilityids[id] is not None:
-                abilities.append(sql.lookup_ability(self.control.cursor, 1, abilityids[id])[0][1])
+                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
@@ -285,4 +284,4 @@ class PokeEditPage(tk.Frame):
             sql.update_pokemon(self.control.cursor, 1, self.pokeid, ids[0], gender, nature, nick, ids[1], item, move[0], move[1], move[2], move[3])
             print('Sucessfully updated pokemon')
         self.errortxt['text'] = ''
-        self.control.show_frame(TeamPage, self.teamid, self.pokeid)
+        self.control.show_frame(teamPage.TeamPage, self.teamid, self.pokeid)

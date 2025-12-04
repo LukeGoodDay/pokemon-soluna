@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import simpledialog
 import sqlHelperFunctions as sql
-from teamPage import TeamPage
+import teamPage
 
 class HomePage(tk.Frame):
     teamids = []
@@ -44,4 +44,4 @@ class HomePage(tk.Frame):
         id = self.teams['values'].index(self.teams.get())
         self.teams.set('')
         teamid = self.teamids[id]
-        self.control.show_frame(TeamPage, teamid)
+        self.control.show_frame(teamPage.TeamPage, teamid)

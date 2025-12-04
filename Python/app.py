@@ -2,6 +2,8 @@ import tkinter as tk
 from homePage import HomePage
 from teamPage import TeamPage
 from pokeEditPage import PokeEditPage
+from loginPage import LoginPage
+from registerPage import RegisterPage
 
 class tkinterApp(tk.Tk):
     cursor = 0
