@@ -79,7 +79,9 @@ def login(mysql_cursor, email : str, password : str) -> int:
         FROM 
             sessions NATURAL JOIN user_auth
         WHERE 
-            user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}" AND sessions.ended IS NULL;
+            user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}" AND sessions.ended IS NULL
+        ORDER BY
+            sessttions.started DESC;
     """)
     res = mysql_cursor.fetchone()
     if res is None:
