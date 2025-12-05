@@ -58,3 +58,7 @@ class tkinterApp(tk.Tk):
         frame.tkraise()
         if self.cursor != 0:
             frame.load(team, pokemon)
+
+if __name__ == "__main__":
+    app = tkinterApp()
+    app.mainloop()
