@@ -45,9 +45,13 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
         FROM 
             sessions NATURAL JOIN users
         WHERE 
-            users.username = "{username}" AND sessions.ended = NULL;
+            users.username = "{username}" AND sessions.ended IS NULL;
     """)
-    return mysql_cursor.fetchone()
+    res = mysql_cursor.fetchone()
+    if res is None:
+        return res
+    else:
+        return res[0]
 
 # login - logs a user into the app
 # connector mysql_cursor - the link to the database
@@ -64,7 +68,7 @@ def login(mysql_cursor, email : str, password : str) -> int:
             "{datetime.now()}",
             NULL
         FROM 
-            users 
+            users NATURAL JOIN user_auth
         WHERE 
             user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}";
     """)
@@ -73,11 +77,15 @@ def login(mysql_cursor, email : str, password : str) -> int:
         SELECT 
             session_id 
         FROM 
-            sessions NATURAL JOIN users NATURAL JOIN user_auth
+            sessions NATURAL JOIN user_auth
         WHERE 
-            user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}" AND sessions.ended = NULL;
+            user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}" AND sessions.ended IS NULL;
     """)
-    return mysql_cursor.fetchone()
+    res = mysql_cursor.fetchone()
+    if res is None:
+        return res
+    else:
+        return res[0]
 
 # log - logs an action taken by the current user
 # connector mysql_cursor - the link to the database
