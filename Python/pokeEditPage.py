@@ -211,7 +211,7 @@ class PokeEditPage(tk.Frame):
         result = sql.search_forms(self.control.cursor, self.control.session, form)
         if i == 1 or i == 5:
             move = self.move1.get()
-            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1], move)
+            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][0], move)
             movelist = [i[5] for i in moves]
             self.move1['values'] = movelist
             if move in movelist:
@@ -219,7 +219,7 @@ class PokeEditPage(tk.Frame):
                 movevals.append(moves[idx][2])
         if i == 2 or i == 5:
             move = self.move2.get()
-            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1], move)
+            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][0], move)
             movelist = [i[5] for i in moves]
             self.move2['values'] = movelist
             if move in movelist:
@@ -228,7 +228,7 @@ class PokeEditPage(tk.Frame):
                     movevals.append(moves[idx][2])
         if i == 3 or i == 5:
             move = self.move3.get()
-            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1], move)
+            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][0], move)
             movelist = [i[5] for i in moves]
             self.move3['values'] = movelist
             if move in movelist:
@@ -237,7 +237,7 @@ class PokeEditPage(tk.Frame):
                     movevals.append(moves[idx][2])
         if i == 4 or i == 5:
             move = self.move4.get()
-            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1], move)
+            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][0], move)
             movelist = [i[5] for i in moves]
             self.move4['values'] = movelist
             if move in movelist:
