@@ -4,6 +4,8 @@ from teamPage import TeamPage
 from pokeEditPage import PokeEditPage
 from loginPage import LoginPage
 from registerPage import RegisterPage
+from statsPage import StatsPage
+from pokedexPage import PokedexPage
 
 class tkinterApp(tk.Tk):
     cursor = 0
@@ -27,7 +29,7 @@ class tkinterApp(tk.Tk):
  
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage):
+        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage, StatsPage, PokedexPage):
  
             frame = F(container, self)
  
@@ -59,6 +61,7 @@ class tkinterApp(tk.Tk):
         if self.cursor != 0:
             frame.load(team, pokemon)
 
+# For quick testing when not connected to database
 if __name__ == "__main__":
     app = tkinterApp()
     app.mainloop()
