@@ -81,6 +81,9 @@ class PokedexPage(tk.Frame):
         self.secondary = ttk.Label(self, text ="Secondary Type: ")
         self.secondary.grid(row = 7, column = 1, padx = 10, pady = 10)
 
+        self.steps = ttk.Label(self, text ="Hatch Steps: ")
+        self.steps.grid(row = 7, column = 2, padx = 10, pady = 10)
+
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
         self.updateForm()
@@ -124,6 +127,11 @@ class PokedexPage(tk.Frame):
             self.egg2['text'] = f"Egg Group 2: {f[24]}"
             self.primary['text'] = f"Primary Type: {f[25]}"
             self.secondary['text'] = f"Secondary Type: {f[26]}"
+
+            steps = sql.get_hatching_steps(self.control.cursor, self.control.session, f[1])
+            if steps is not None:
+                steps = steps[0]
+            self.steps['text'] = f"Hatch Steps: {steps}"
 
 
     def goBack(self):
