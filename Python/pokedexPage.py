@@ -32,6 +32,9 @@ class PokedexPage(tk.Frame):
     def load(self, teamid=0, pokeid=0):
         self.email.delete(0, tk.END)
         self.password.delete(0, tk.END)
+    
+    def updateForm(self):
+        pass
 
     def submitPress(self):
         try:
