@@ -27,7 +27,8 @@ class LoginPage(tk.Frame):
         self.submit.grid(row = 5, column = 0, padx = 10, pady = 10, columnspan=2)
 
     def load(self, teamid=0, pokeid=0):
-        pass
+        self.email.delete(0, tk.END)
+        self.password.delete(0, tk.END)
 
     def submitPress(self):
         try:

@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import simpledialog
 import sqlHelperFunctions as sql
 import teamPage
+import loginPage
 
 class HomePage(tk.Frame):
     teamids = []
@@ -12,6 +13,9 @@ class HomePage(tk.Frame):
 
         self.greet = ttk.Label(self, text='Welcome!')
         self.greet.grid(row=0, column=0, padx=10, pady=10)
+
+        self.logout = ttk.Button(self, text="Logout", command=self.pressLogout)
+        self.logout.grid(row=0, column=1, padx=10, pady=10)
 
         self.teamlbl = ttk.Label(self, text='Your Teams:')
         self.teamlbl.grid(row=1, column=0, padx=5, pady=5)
@@ -45,3 +49,7 @@ class HomePage(tk.Frame):
         self.teams.set('')
         teamid = self.teamids[id]
         self.control.show_frame(teamPage.TeamPage, teamid)
+
+    def pressLogout(self):
+        sql.logout(self.control.cursor, self.control.session)
+        self.control.show_frame(loginPage.LoginPage)
