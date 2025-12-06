@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk
 import sqlHelperFunctions as sql
 import teamPage
 import homePage
 
 class PokedexPage(tk.Frame):
     teamid = 0
+    img = None
     def __init__(self, parent, controller): 
         tk.Frame.__init__(self, parent)
 
@@ -84,6 +86,9 @@ class PokedexPage(tk.Frame):
         self.steps = ttk.Label(self, text ="Hatch Steps: ")
         self.steps.grid(row = 7, column = 2, padx = 10, pady = 10)
 
+        self.imgbox = ttk.Label(self)
+        self.imgbox.grid(row = 0, column=3, rowspan=7, columnspan=2)
+
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
         self.updateForm()
@@ -132,6 +137,11 @@ class PokedexPage(tk.Frame):
             if steps is not None:
                 steps = steps[0]
             self.steps['text'] = f"Hatch Steps: {steps}"
+
+            loc = sql.get_image(self.control.cursor, self.control.session, f[2])
+            self.img = Image.open(loc)
+            self.img = ImageTk.PhotoImage(self.img)
+            self.imgbox['image'] = self.img
 
 
     def goBack(self):
