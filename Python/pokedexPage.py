@@ -101,6 +101,10 @@ class PokedexPage(tk.Frame):
 
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
+        if pokeid != 0:
+            formid = sql.get_pokemon_details(self.control.cursor, self.control.session, pokeid)[1]
+            form = sql.get_form_details(self.control.cursor, self.control.session, formid)[3]
+            self.form.set(form)
         self.updateForm()
     
     def updateForm(self, *args):
@@ -187,5 +191,8 @@ class PokedexPage(tk.Frame):
             self.imgbox['image'] = self.img
 
 
-    def goBack(self):
-        self.control.show_frame(teamPage.TeamPage, self.teamid)
+    def goBack(self, *args):
+        if self.teamid != 0:
+            self.control.show_frame(teamPage.TeamPage, self.teamid)
+        else:
+            self.control.show_frame(homePage.HomePage)

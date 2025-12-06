@@ -9,7 +9,7 @@ from pokedexPage import PokedexPage
 
 class tkinterApp(tk.Tk):
     cursor = 0
-    session = 1
+    session = 0
     conn=1
     # __init__ function for class tkinterApp 
     def __init__(self, *args, **kwargs): 

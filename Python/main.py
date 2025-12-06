@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 from app import tkinterApp
+import sqlHelperFunctions as sql
 
 # Configuration struct equivalent
 class DbConfig:
@@ -47,6 +48,8 @@ def main():
         print(f"[STD ERROR] {e}")
     finally:
         if conn and conn.is_connected():
+            if app.session != 0:
+                sql.logout(app.cursor, app.session)
             app.closeCursor()
             conn.close()
             print("🔒 MySQL connection closed.")
