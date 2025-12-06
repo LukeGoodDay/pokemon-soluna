@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.constants import DISABLED, NORMAL
 import sqlHelperFunctions as sql
 import teamPage
 
@@ -148,11 +149,11 @@ class PokeEditPage(tk.Frame):
             gender = forminfo[20]
             if gender is None:
                 self.gender.set('N')
-                self.gender.state(["disabled"])
+                self.gender["state"] = DISABLED
             else:
                 if self.gender.get() == 'N':
                     self.gender.set('M')
-                self.gender.state(["readonly"])
+                self.gender["state"] = NORMAL
             moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1])
             movelist = [i[5] for i in moves]
             self.move1['values'] = movelist

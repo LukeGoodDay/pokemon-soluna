@@ -81,7 +81,8 @@ def login(mysql_cursor, email : str, password : str) -> int:
         WHERE 
             user_auth.email = "{email}" AND user_auth.hashed_password = "{hashlib.sha256(password.encode('utf-8')).hexdigest()}" AND sessions.ended IS NULL
         ORDER BY
-            sessttions.started DESC;
+            sessions.started DESC
+        LIMIT 1;
     """)
     res = mysql_cursor.fetchone()
     if res is None:
