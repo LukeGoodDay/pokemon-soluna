@@ -412,9 +412,17 @@ def search_forms(mysql_cursor, session_id : int, name : str):
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token
 # int form_id - the form id of the pokemon
-# returns the image of the form
-def get_image(mysql_cursor, session_id : int, form_id : int):
-    pass
+# returns str - the path of the image
+def get_image(mysql_cursor, session_id : int, form_id : int) -> str:
+    mysql_cursor.execute(
+    f"""
+        SELECT image_path FROM images WHERE form_id = {form_id};
+    """)
+    res = mysql_cursor.fetchone()
+    if res is None:
+        return res
+    else:
+        return res[0]
 
 # get_move_details - gets the details about a move
 # connector mysql_cursor - the link to the database
