@@ -44,7 +44,7 @@ class TeamPage(tk.Frame):
                     self.pokeids[i] = pokemon[0]
                     nick = pokemon[2]
                     if nick is None:
-                        nick='Unnamed'
+                        nick=sql.get_form_details(self.control.cursor, self.control.session, pokemon[1])[3]
                     self.labels[i]['text'] = f"Pokemon #{i}: {nick}"
                     self.labels[i].grid(row=i+1, column=0, padx=10, pady=10, sticky='w')
                     self.edits[i]['text'] = 'Edit'
