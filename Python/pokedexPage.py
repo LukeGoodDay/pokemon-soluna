@@ -157,6 +157,7 @@ class PokedexPage(tk.Frame):
             self.steps['text'] = f"Hatch Steps: {steps}"
 
             #27
+            types = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy']
             for i in range(18):
                 pass
 
