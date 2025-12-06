@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import scrolledtext
 from PIL import Image, ImageTk
 import sqlHelperFunctions as sql
 import teamPage
@@ -88,6 +89,15 @@ class PokedexPage(tk.Frame):
 
         self.imgbox = ttk.Label(self)
         self.imgbox.grid(row = 0, column=3, rowspan=9, columnspan=2)
+
+        self.multlbl = ttk.Label(self, text="Multipliers:")
+        self.steps.grid(row = 8, column = 1, padx = 10, pady = 10)
+
+        self.multbox = scrolledtext.ScrolledText(self)
+        self.multbox.grid(row=9, column=0, rowspan=2, columnspan=3, padx = 10, pady = 10)
+        self.multbox.configure(state='disabled')
+
+
 
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
