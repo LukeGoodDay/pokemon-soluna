@@ -40,12 +40,12 @@ class tkinterApp(tk.Tk):
  
             frame.grid(row = 0, column = 0, sticky ="nsew")
  
-        self.show_frame(LoginPage)
+        self.show_frame(PokedexPage)
     
     def initCursor(self, conn):
         self.conn = conn
         self.cursor = conn.cursor()
-        self.frames[LoginPage].load()
+        self.frames[PokedexPage].load()
     
     def closeCursor(self):
         self.cursor.close()
