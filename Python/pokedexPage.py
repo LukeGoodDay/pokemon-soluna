@@ -87,7 +87,7 @@ class PokedexPage(tk.Frame):
         self.steps.grid(row = 7, column = 2, padx = 10, pady = 10)
 
         self.imgbox = ttk.Label(self)
-        self.imgbox.grid(row = 0, column=3, rowspan=7, columnspan=2)
+        self.imgbox.grid(row = 0, column=3, rowspan=9, columnspan=2)
 
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
@@ -99,7 +99,7 @@ class PokedexPage(tk.Frame):
         form_options = [i[2] for i in result]
         self.form['values'] = form_options
         if form in form_options:
-            f = sql.get_form_details(self.control.cursor, self.control.session, result[0][1])
+            f = sql.get_form_details(self.control.cursor, self.control.session, result[0][0])
             self.classtxt['text'] = f[18]
             self.dexnum['text'] = f"Pokedex: #{f[1]}"
             self.hp['text'] = f"HP: {f[4]}"
@@ -126,8 +126,16 @@ class PokedexPage(tk.Frame):
 
             self.weight['text'] = f"Weight: {f[14]} lbs"
             self.height['text'] = f"Height: {f[15]} in"
-            self.male['text'] = f"Male Percent: {f[19]*100}%"
-            self.female['text'] = f"Female Percent: {f[20]*100}%"
+            
+            gen = None
+            if f[19] is not None:
+                gen = f[19]*100
+            self.male['text'] = f"Male Percent: {gen}%"
+
+            gen = None
+            if f[20] is not None:
+                gen = f[20]*100
+            self.female['text'] = f"Female Percent: {gen}%"
             self.egg1['text'] = f"Egg Group 1: {f[23]}"
             self.egg2['text'] = f"Egg Group 2: {f[24]}"
             self.primary['text'] = f"Primary Type: {f[25]}"
