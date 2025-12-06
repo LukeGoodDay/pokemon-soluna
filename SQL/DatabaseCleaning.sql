@@ -135,36 +135,19 @@ FROM
 	SELECT
 		*,
 		CASE
-			WHEN forme = 'Raticate (2)' THEN 'Raticate (1)'
-			WHEN forme = 'Castform' THEN 'Castform (Normal)'
 			WHEN forme = 'Burmy' THEN 'Burmy (ALL)'
-			WHEN forme = 'Cherrim' THEN 'Cherrim (Overcast Form)'
-			WHEN forme = 'Gastrodon' THEN 'Gastrodon (West Sea)'
 			WHEN forme = 'Rotom' THEN 'Rotom (Rotom)'
 			WHEN forme = 'Arceus' THEN 'Arceus (ALL)'
 			WHEN forme = 'Basculin' THEN 'Basculin (Red-Striped Form)'
-			WHEN forme = 'Darmanitan' THEN 'Darmanitan (Standard Mode)'
-			WHEN forme = 'Deerling' THEN 'Deerling (ALL)'
-			WHEN forme = 'Sawsbuck' THEN 'Sawsbuck (ALL)'
 			WHEN forme = 'Tornadus' THEN 'Tornadus (Incarnate Forme)'
 			WHEN forme = 'Thundurus' THEN 'Thundurus (Incarnate Forme)'
 			WHEN forme = 'Landorus' THEN 'Landorus (Incarnate Forme)'
 			WHEN forme = 'Kyurem' THEN 'Kyurem (Kyurem)'
 			WHEN forme = 'Keldeo' THEN 'Keldeo (Ordinary Form)'
-			WHEN forme = 'Genesect' THEN 'Genesect (Genesect)'
 			WHEN forme = 'Vivillon' THEN 'Vivillon (ALL)'
-			WHEN forme = 'Flabébé' THEN 'Flabébé (ALL)'
-			WHEN forme = 'Floette' THEN 'Floette (Red Flower)'
-			WHEN forme = 'Florges' THEN 'Florges (ALL)'
-			WHEN forme = 'Furfrou' THEN 'Furfrou (Natural Form)'
-			WHEN forme = 'Aegislash' THEN 'Aegislash (Shield Forme)'
-			WHEN forme = 'Xerneas' THEN 'Xerneas (ALL)'
 			WHEN forme = 'Hoopa' THEN 'Hoopa (Hoopa Confined)'
 			WHEN forme = 'Oricorio' THEN 'Oricorio (Baile Style)'
-			WHEN forme = 'Wishiwashi' THEN 'Wishiwashi (Solo Form)'
 			WHEN forme = 'Silvally' THEN 'Silvally (ALL)'
-			WHEN forme = 'Minior' THEN 'Minior (Meteor Form)'
-			WHEN forme = 'Mimikyu' THEN 'Mimikyu (Disguised Form)'
 			ELSE forme
 		END AS renamed_pokemon
 	FROM
@@ -254,11 +237,6 @@ FROM
         CASE
 			WHEN `Pokemon` LIKE 'A.%' THEN CONCAT(REPLACE(`Pokemon`, 'A.', ''), ' (Alola Form)')
             WHEN `Pokemon` = 'Oricorio' THEN 'Oricorio (Baile Style)'
-            WHEN `Pokemon` = 'Mimikyu' THEN 'Mimikyu (Disguised Form)'
-            WHEN `Pokemon` = 'Shellos' THEN 'Shellos (East Sea)'
-            WHEN `Pokemon` = 'Minior' THEN 'Minior (Meteor Form)'
-            WHEN `Pokemon` = 'Gastrodon' THEN 'Gastrodon (East Sea)'
-            WHEN `Pokemon` = 'Wishiwashi' THEN 'Wishiwashi (Solo Form)'
 			ELSE `Pokemon`
 		END AS renamed_pokemon
 	FROM
