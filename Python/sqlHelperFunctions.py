@@ -136,6 +136,22 @@ def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nat
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, (form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id))
 
+# add_wonder_trade - adds a user found wonder trade
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# datetime trade_time - when the trade took place
+# int form_id - which pokemon this is
+# char gender - the pokemon's gender ('M", 'F', 'N')
+# int nature_id - the pokemon's nature
+# returns nothing
+def add_wonder_trade(mysql_cursor, session_id : int, trade_time : datetime, form_id : int, gender : str, nature_id : int) -> None:
+    log(mysql_cursor, session_id, "CREATE wonder_trade")
+    mysql_cursor.execute(
+    f"""
+        INSERT INTO wonder_trades(trade_time, form_id, gender, nature_id)
+        VALUES (%s, %s, %s, %s);
+    """, (trade_time, form_id, None if gender == 'N' else gender, nature_id))
+
 ##########
 #
 # UPDATE
