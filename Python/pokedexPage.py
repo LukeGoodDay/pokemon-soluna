@@ -156,6 +156,10 @@ class PokedexPage(tk.Frame):
                 steps = steps[0]
             self.steps['text'] = f"Hatch Steps: {steps}"
 
+            #27
+            for i in range(18):
+                pass
+
             loc = sql.get_image(self.control.cursor, self.control.session, f[2])
             self.img = Image.open(loc)
             self.img = ImageTk.PhotoImage(self.img)
