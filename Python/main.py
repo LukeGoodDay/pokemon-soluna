@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import mysql.connector.errors as sqlerrors
 from app import tkinterApp
 import sqlHelperFunctions as sql
 
@@ -19,6 +20,8 @@ class DbConfig:
  
 def main():
     cfg = DbConfig()
+    conn = None
+    app = None
     try:
         # Step 1: Connect to MySQL server (without specifying database yet)
         conn = mysql.connector.connect(
@@ -42,16 +45,23 @@ def main():
         app.initCursor(conn)
         app.mainloop()
 
+    except (sqlerrors.InterfaceError, sqlerrors.ConnectionTimeoutError) as e:
+        print("Error conecting to database - Have you changed the database config to your setup?")
+        print(f"Details: [SQL ERROR @ main] {e.msg} | errno: {e.errno} | sqlstate: {e.sqlstate}")
+    except (sqlerrors.ProgrammingError) as e:
+        print(f"[SQL ERROR @ main] {e.msg} | errno: {e.errno} | sqlstate: {e.sqlstate}")
+        print("Please ensure your database has all the required tables")
     except Error as e:
         print(f"[SQL ERROR @ main] {e.msg} | errno: {e.errno} | sqlstate: {e.sqlstate}")
     except Exception as e:
         print(f"[STD ERROR] {e}")
     finally:
         if conn and conn.is_connected():
-            if app.session != 0:
-                sql.logout(app.cursor, app.session)
-                print("Successfully logged out.")
-            app.closeCursor()
+            if app:
+                if app.session != 0:
+                    sql.logout(app.cursor, app.session)
+                    print("Successfully logged out.")
+                app.closeCursor()
             conn.close()
             print("🔒 MySQL connection closed.")
 
