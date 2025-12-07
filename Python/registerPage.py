@@ -43,7 +43,19 @@ class RegisterPage(tk.Frame):
 
     def submitPress(self):
         try:
-            self.control.session = sql.register(self.control.cursor, self.name.get(), self.email.get(), self.password.get())
+            name = self.name.get()
+            email = self.email.get()
+            password = self.password.get()
+            if name == '':
+                self.errortxt['text'] = "Name can't be blank"
+                return
+            if '@' not in email:
+                self.errortxt['text'] = "Invalid Email Address"
+                return
+            if password == '':
+                self.errortxt['text'] = "Password can't be blank"
+                return
+            self.control.session = sql.register(self.control.cursor, name, email, password)
             self.control.show_frame(homePage.HomePage)
         except sqlerrors.IntegrityError as e:
             self.errortxt['text'] = "User Already Exists"

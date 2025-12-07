@@ -89,6 +89,9 @@ class WonderTradePage(tk.Frame):
         gender = self.gender.get()
         if gender == '':
             gender = 'N'
-        sql.add_wonder_trade(self.control.cursor, self.control.session, datetime.now(), id, gender, nature)
-        self.errortxt['text'] = 'Submitted Wondertrade!'
-        self.load()
+        try:
+            sql.add_wonder_trade(self.control.cursor, self.control.session, datetime.now(), id, gender, nature)
+            self.errortxt['text'] = 'Submitted Wondertrade!'
+            self.load()
+        except Exception as e:
+            self.errortxt['text'] = e

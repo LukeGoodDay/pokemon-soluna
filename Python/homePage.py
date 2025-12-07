@@ -36,8 +36,11 @@ class HomePage(tk.Frame):
         self.stat = ttk.Button(self, text="Statistics", command=self.stats)
         self.stat.grid(row=4, column=0, padx=10, pady=10)
 
-        self.wonder = ttk.Button(self, text="Wonder Trades", command=self.wonder)
+        self.wonder = ttk.Button(self, text="Wonder Trades", command=self.wonderld)
         self.wonder.grid(row=4, column=1, padx=10, pady=10)
+
+        self.errortxt = ttk.Label(self, text ="")
+        self.errortxt.grid(row = 5, column = 0, columnspan=3)
 
         # Bind selection event
         self.teams.bind("<<ComboboxSelected>>", self.select)
@@ -53,8 +56,13 @@ class HomePage(tk.Frame):
     def create(self, *args):
         name = simpledialog.askstring("Create Team", "What is the name of your team?")
         if name != '' and name is not None:
-            sql.new_team(self.control.cursor, self.control.session, name)
-            self.load()
+            try:
+                sql.new_team(self.control.cursor, self.control.session, name)
+                self.load()
+            except Exception as e:
+                self.errortxt['text'] = e
+        else:
+            self.errortxt['text'] = "Invalid Team Name"
     
     def pokedex(self, *args):
         self.control.show_frame(pokedexPage.PokedexPage, 0)
@@ -62,7 +70,7 @@ class HomePage(tk.Frame):
     def stats(self, *args):
         self.control.show_frame(statsPage.StatsPage, 0)
 
-    def wonder(self, *args):
+    def wonderld(self, *args):
         self.control.show_frame(wonderTradePage.WonderTradePage)
 
     def select(self, *args):

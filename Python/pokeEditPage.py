@@ -278,11 +278,14 @@ class PokeEditPage(tk.Frame):
         elif len(nick) > 12:
             nick = nick[0:12]
         move = self.updateMove(5)
-        if self.pokeid == 0:
-            sql.new_pokemon(self.control.cursor, self.control.session, ids[0], gender, nature, self.teamid, nick, ids[1], item, move[0], move[1], move[2], move[3])
-            print("Sucessfully created pokemon")
-        else:
-            sql.update_pokemon(self.control.cursor, self.control.session, self.pokeid, ids[0], gender, nature, nick, ids[1], item, move[0], move[1], move[2], move[3])
-            print('Sucessfully updated pokemon')
-        self.errortxt['text'] = ''
-        self.control.show_frame(teamPage.TeamPage, self.teamid, self.pokeid)
+        try:
+            if self.pokeid == 0:
+                sql.new_pokemon(self.control.cursor, self.control.session, ids[0], gender, nature, self.teamid, nick, ids[1], item, move[0], move[1], move[2], move[3])
+                print("Sucessfully created pokemon")
+            else:
+                sql.update_pokemon(self.control.cursor, self.control.session, self.pokeid, ids[0], gender, nature, nick, ids[1], item, move[0], move[1], move[2], move[3])
+                print('Sucessfully updated pokemon')
+            self.errortxt['text'] = ''
+            self.control.show_frame(teamPage.TeamPage, self.teamid, self.pokeid)
+        except Exception as e:
+            self.errortxt['text'] = e
