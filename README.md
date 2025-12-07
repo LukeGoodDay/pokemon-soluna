@@ -10,7 +10,7 @@
 &emsp;5.&emsp;Run [RegisterDefaultUser.sql](./SQL/RegisterDefaultUser.sql)  
 &emsp;6.&emsp;Run "pip install mysql-connector-python" in your terminal  
 &emsp;7.&emsp;Run "pip install pillow" in your terminal  
-&emsp;8.&emsp;Update DBConfig in [main.py](./Python/main.py) to reflect your MySQL environment 
+&emsp;8.&emsp;Update DBConfig in [main.py](./Python/main.py) to reflect your MySQL environment  
 &emsp;9.&emsp;Finally, run [main.py](./Python/main.py) from the Python folder
 ## Datasets
 &emsp;•&emsp;Pokémon Sun and Moon Data - https://www.kaggle.com/datasets/mylesoneill/pokemon-sun-and-moon-gen-7-stats/data?select=pokemon.csv  
