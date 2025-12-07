@@ -584,7 +584,7 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
 def get_pokemon_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM pokemon_popularity NATURAL JOIN forms;
+        SELECT * FROM pokemon_popularity NATURAL JOIN forms ORDER BY pokemon_popularity.count desc;
     """)
     return mysql_cursor.fetchall()
 
@@ -595,7 +595,7 @@ def get_pokemon_popularity(mysql_cursor, session_id : int):
 def get_type_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM type_popularity NATURAL JOIN type_chart;
+        SELECT * FROM type_popularity NATURAL JOIN type_chart ORDER BY type_popularity.count desc;
     """)
     return mysql_cursor.fetchall()
 
@@ -606,7 +606,7 @@ def get_type_popularity(mysql_cursor, session_id : int):
 def get_item_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM item_popularity NATURAL JOIN items;
+        SELECT * FROM item_popularity NATURAL JOIN items ORDER BY item_popularity.count desc;
     """)
     return mysql_cursor.fetchall()
 
@@ -617,6 +617,6 @@ def get_item_popularity(mysql_cursor, session_id : int):
 def get_move_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM move_popularity NATURAL JOIN moves;
+        SELECT * FROM move_popularity NATURAL JOIN moves ORDER BY move_popularity.count desc;
     """)
     return mysql_cursor.fetchall()

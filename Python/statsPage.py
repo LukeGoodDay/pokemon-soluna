@@ -10,36 +10,41 @@ class StatsPage(tk.Frame):
 
         self.control = controller
 
-        self.emailLbl = ttk.Label(self, text ="Email:")
-        self.emailLbl.grid(row = 0, column = 1, padx = 10, pady = 10)
-        self.email = ttk.Entry(self)
-        self.email.grid(row = 1, column = 1, padx = 10, pady = 10)
+        self.pokebox = ttk.Frame(self)
 
-        self.passwordLbl = ttk.Label(self, text ="Password:")
-        self.passwordLbl.grid(row = 2, column = 1, padx = 10, pady = 10)
-        self.password = ttk.Entry(self)
-        self.password.grid(row = 3, column = 1, padx = 10, pady = 10)
+        self.pokeLbl = ttk.Label(self, text ="Pokemon Ranking:")
+        self.pokeLbl.grid(row = 0, column = 1, padx = 10, pady = 10)
+        # Create a Treeview widget
+        self.poke = ttk.Treeview(self.pokebox)
 
-        self.submit = ttk.Button(self, text = "Submit", command=self.submitPress)
-        self.submit.grid(row = 4, column = 0, padx = 10, pady = 10, columnspan=2)
+        # Define the columns
+        self.poke['columns'] = ('Rank', 'Name', 'Count', 'Percent')
 
-        self.submit = ttk.Button(self, text = "Register Instead", command=self.swapRegister)
-        self.submit.grid(row = 5, column = 0, padx = 10, pady = 10, columnspan=2)
+        # Format the columns
+        self.poke.column('#0', width=0, stretch=tk.NO)
+        self.poke.column('Rank', anchor=tk.W, width=100)
+        self.poke.column('Name', anchor=tk.W, width=200)
+        self.poke.column('Count', anchor=tk.W, width=100)
+        self.poke.column('Percent', anchor=tk.W, width=100)
+
+        # Create the headings
+        self.poke.heading('#0', text='', anchor=tk.W)
+        self.poke.heading('Rank', text='Rank', anchor=tk.W)
+        self.poke.heading('Name', text='Name', anchor=tk.W)
+        self.poke.heading('Count', text='Count', anchor=tk.W)
+        self.poke.heading('Percent', text='Percent', anchor=tk.W)
+
+        self.poke.pack(expand=True, fill=tk.BOTH)
+
+        # Create vertical scrollbar
+        self.pokesb = ttk.Scrollbar(self.pokebox, orient="vertical", command=self.poke.yview)
+        self.pokesb.pack(side='right', fill='y')
+        self.poke.configure(yscrollcommand=self.pokesb.set)
+
+        self.pokebox.grid(row=1, column=0, columnspan=3, pady=5, padx=5)
 
     def load(self, teamid=0, pokeid=0):
-        self.email.delete(0, tk.END)
-        self.password.delete(0, tk.END)
-
-    def submitPress(self):
-        try:
-            res = sql.login(self.control.cursor, self.email.get(), self.password.get())
-            if res == None:
-                print("Invalid Username or Password")
-            else: 
-                self.control.session = res
-                self.control.show_frame(homePage.HomePage)
-        except Exception as e:
-            print(f"[STD ERROR] {e}")
-
-    def swapRegister(self):
-        self.control.show_frame(registerPage.RegisterPage)
+        pokestat = sql.get_pokemon_popularity(self.control.cursor, self.control.session)
+        print(pokestat[0])
+        for stat in pokestat:
+            self.poke.insert(parent='', index=stat[0], values=(stat[2], stat[5], stat[1], f"{stat[3]}%"))
