@@ -41,6 +41,8 @@ class WonderTradePage(tk.Frame):
         self.errortxt.grid(row = 5, column = 0, padx = 10, pady = 10, columnspan=2)
 
     def load(self, teamid=0, pokeid=0):
+        if teamid != -1:
+            self.errortxt['text'] = ''
         self.form.set('')
         self.gender.state(["readonly"])
         self.gender.set('M')
@@ -92,6 +94,6 @@ class WonderTradePage(tk.Frame):
         try:
             sql.add_wonder_trade(self.control.cursor, self.control.session, datetime.now(), id, gender, nature)
             self.errortxt['text'] = 'Submitted Wondertrade!'
-            self.load()
+            self.load(-1)
         except Exception as e:
             self.errortxt['text'] = e

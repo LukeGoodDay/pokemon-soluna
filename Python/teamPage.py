@@ -36,6 +36,8 @@ class TeamPage(tk.Frame):
         self.errortxt.grid(row = 5, column = 0, columnspan=3)
     
     def load(self, teamid, pokeid=0):
+        if pokeid != -1:
+            self.errortxt['text'] = ""
         self.teamid = teamid
         teams = sql.get_user_teams(self.control.cursor, self.control.session)
         teamname = ''
@@ -94,9 +96,15 @@ class TeamPage(tk.Frame):
     def rename(self, *args):
         name = simpledialog.askstring("Rename Team", "What is the new name of your team?")
         if name != '' and name is not None:
+            tea = sql.get_user_teams(self.control.cursor, self.control.session)
+            tea = [i[2] for i in tea]
+            if name in tea:
+                self.errortxt['text'] = "Team Already Exists"
+                return
             try:
                 sql.update_team_name(self.control.cursor, self.control.session, self.teamid, name)
-                self.load(self.teamid)
+                self.load(self.teamid, -1)
+                self.errortxt['text'] = "Team Successfully Renamed"
             except Exception as e:
                 self.errortxt['text'] = e
         else:
