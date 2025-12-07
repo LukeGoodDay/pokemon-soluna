@@ -624,6 +624,23 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
     """)
     return mysql_cursor.fetchone()
 
+# find_wondertrade_chance - tries to find the wondertrade chance for the specified pokemon
+# connector mysql_cursor - the link to the database
+# int session_id - the current session token
+# int form_id - the form id of the pokemon
+# returns the wondertrade if found otherwise None
+def find_wondertrade_chance(mysql_cursor, session_id : int, form_id : int):
+    mysql_cursor.execute(
+    f"""
+        SELECT COUNT(*) FROM wonder_trades;
+    """)
+    total = mysql_cursor.fetchone()
+    mysql_cursor.execute(
+    f"""
+        SELECT COUNT(*) FROM wonder_trades WHERE form_id = {form_id};
+    """)
+    return mysql_cursor.fetchone()[0] / total[0] * 100
+
 # get_pokemon_popularity - gets the data in the pokemon popularity table
 # connector mysql_cursor - the link to the database
 # int session_id - the current session token

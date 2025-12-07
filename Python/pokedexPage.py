@@ -87,11 +87,14 @@ class PokedexPage(tk.Frame):
         self.steps = ttk.Label(self, text ="Hatch Steps: ")
         self.steps.grid(row = 7, column = 2, padx = 10, pady = 10)
 
+        self.wonder = ttk.Label(self, text ="Wondertrade Chance: %")
+        self.wonder.grid(row = 8, column = 0, padx = 10, pady = 10)
+
         self.imgbox = ttk.Label(self)
         self.imgbox.grid(row = 0, column=3, rowspan=9, columnspan=2)
 
         self.multlbl = ttk.Label(self, text="Multipliers:")
-        self.multlbl.grid(row = 8, column = 1)
+        self.multlbl.grid(row = 8, column = 1, padx = 10, pady = 10)
 
         self.multbox = scrolledtext.ScrolledText(self, height=15)
         self.multbox.grid(row=9, column=0, rowspan=2, columnspan=3)
@@ -159,6 +162,9 @@ class PokedexPage(tk.Frame):
             if steps is not None:
                 steps = steps[0]
             self.steps['text'] = f"Hatch Steps: {steps}"
+
+            wonderpct = sql.find_wondertrade_chance(self.control.cursor, self.control.session, f[2])
+            self.wonder['text'] = f"Wondertrade Chance: {wonderpct:.2f}%"
 
             #27
             self.multbox.configure(state='normal')
