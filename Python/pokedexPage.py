@@ -171,12 +171,12 @@ class PokedexPage(tk.Frame):
             self.multbox.delete('1.0', tk.END)
             types = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy']
             eff = [[], [], [], [], []]
-            titles = ["Very Strong:", "Strong:", "Weak:", "Immune:", "Normal:"]
+            titles = ["Super Effective:", "Effective:", "Not Effective:", "Immune:", "Normal:"]
             for i in range(18):
                 stren = f[i+27]
-                if stren == 2:
+                if stren == 4:
                     eff[0].append(types[i])
-                elif stren == 1.5:
+                elif stren == 2:
                     eff[1].append(types[i])
                 elif stren == 0.5:
                     eff[2].append(types[i])
