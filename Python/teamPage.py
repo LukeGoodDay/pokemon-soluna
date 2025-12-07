@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import simpledialog
 from tkinter import ttk
 import sqlHelperFunctions as sql
 import homePage
@@ -28,6 +29,11 @@ class TeamPage(tk.Frame):
         self.back.grid(row=7, column=0, padx=10, pady=10)
         self.removebutton = ttk.Button(self, text="Delete", command=self.remove)
         self.removebutton.grid(row=7, column=1, padx=10, pady=10)
+        self.renamebtn = ttk.Button(self, text="Rename Team", command=self.rename)
+        self.renamebtn.grid(row=7, column=2, padx=10, pady=10)
+
+        self.errortxt = ttk.Label(self, text ="")
+        self.errortxt.grid(row = 5, column = 0, columnspan=3)
     
     def load(self, teamid, pokeid=0):
         self.teamid = teamid
@@ -84,3 +90,14 @@ class TeamPage(tk.Frame):
     def remove(self, *args):
         sql.remove_team(self.control.cursor, self.control.session, self.teamid)
         self.control.show_frame(homePage.HomePage)
+
+    def rename(self, *args):
+        name = simpledialog.askstring("Rename Team", "What is the new name of your team?")
+        if name != '' and name is not None:
+            try:
+                sql.update_team_name(self.control.cursor, self.control.session, self.teamid, name)
+                self.load()
+            except Exception as e:
+                self.errortxt['text'] = e
+        else:
+            self.errortxt['text'] = "Invalid Team Name"

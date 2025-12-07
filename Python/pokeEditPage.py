@@ -145,7 +145,7 @@ class PokeEditPage(tk.Frame):
         form_options = [i[2] for i in result]
         self.form['values'] = form_options
         if form in form_options:
-            forminfo = sql.get_form_details(self.control.cursor, self.control.session, result[0][1])
+            forminfo = sql.get_form_details(self.control.cursor, self.control.session, result[0][0])
             gender = forminfo[20]
             if gender is None:
                 self.gender.set('N')
@@ -154,7 +154,7 @@ class PokeEditPage(tk.Frame):
                 if self.gender.get() == 'N':
                     self.gender.set('M')
                 self.gender["state"] = NORMAL
-            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][1])
+            moves = sql.search_moves(self.control.cursor, self.control.session, result[0][0])
             movelist = [i[5] for i in moves]
             self.move1['values'] = movelist
             self.move2['values'] = movelist
