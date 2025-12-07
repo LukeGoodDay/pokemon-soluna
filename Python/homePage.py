@@ -5,6 +5,7 @@ import sqlHelperFunctions as sql
 import teamPage
 import loginPage
 import pokedexPage
+import statsPage
 
 class HomePage(tk.Frame):
     teamids = []
@@ -31,6 +32,9 @@ class HomePage(tk.Frame):
         self.dex = ttk.Button(self, text="Pokedex", command=self.pokedex)
         self.dex.grid(row=4, column=0, padx=10, pady=10)
 
+        self.stat = ttk.Button(self, text="Statistics", command=self.stats)
+        self.stat.grid(row=5, column=0, padx=10, pady=10)
+
         # Bind selection event
         self.teams.bind("<<ComboboxSelected>>", self.select)
     
@@ -50,6 +54,9 @@ class HomePage(tk.Frame):
     
     def pokedex(self, *args):
         self.control.show_frame(pokedexPage.PokedexPage, 0)
+
+    def stats(self, *args):
+        self.control.show_frame(statsPage.StatsPage, 0)
 
     def select(self, *args):
         id = self.teams['values'].index(self.teams.get())

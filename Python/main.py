@@ -50,6 +50,7 @@ def main():
         if conn and conn.is_connected():
             if app.session != 0:
                 sql.logout(app.cursor, app.session)
+                print("Successfully logged out.")
             app.closeCursor()
             conn.close()
             print("🔒 MySQL connection closed.")

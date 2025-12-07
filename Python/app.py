@@ -6,6 +6,7 @@ from loginPage import LoginPage
 from registerPage import RegisterPage
 from statsPage import StatsPage
 from pokedexPage import PokedexPage
+from statsTypePage import StatsTypePage
 
 class tkinterApp(tk.Tk):
     cursor = 0
@@ -29,7 +30,7 @@ class tkinterApp(tk.Tk):
  
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage, StatsPage, PokedexPage):
+        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage, StatsPage, PokedexPage, StatsTypePage):
  
             frame = F(container, self)
  
@@ -55,7 +56,7 @@ class tkinterApp(tk.Tk):
  
     # to display the current frame passed as
     # parameter
-    def show_frame(self, cont, team=1, pokemon=0):
+    def show_frame(self, cont, team=0, pokemon=0):
         frame = self.frames[cont]
         frame.tkraise()
         if self.cursor != 0:
