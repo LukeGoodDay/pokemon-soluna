@@ -51,6 +51,8 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
     if res is None:
         return res
     else:
+        log(mysql_cursor, res[0], "INSERT Users")
+        log(mysql_cursor, res[0], "INSERT Sessions")
         return res[0]
 
 # login - logs a user into the app
@@ -88,6 +90,7 @@ def login(mysql_cursor, email : str, password : str) -> int:
     if res is None:
         return res
     else:
+        log(mysql_cursor, res[0], "INSERT Sessions")
         return res[0]
 
 # log - logs an action taken by the current user
@@ -167,6 +170,7 @@ def add_wonder_trade(mysql_cursor, session_id : int, trade_time : datetime, form
 # int session_id - the current session token
 # returns nothing
 def logout(mysql_cursor, session_id : int) -> None:
+    log(mysql_cursor, session_id, "UPDATE Sessions")
     mysql_cursor.execute(
     f"""
         UPDATE sessions SET ended = "{datetime.now()}" WHERE session_id = {session_id};
