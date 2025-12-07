@@ -1,4 +1,5 @@
 from datetime import datetime
+from mysql.connector import Error
 import hashlib
 
 ##########
@@ -18,16 +19,24 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
     f"""
         INSERT INTO users(username) VALUES("{username}");
     """)
-    mysql_cursor.execute(
-    f"""
-        INSERT INTO
-            user_auth (user_id, email, hashed_password)
-        SELECT
-            user_id,
-            "{email}",
-            "{hashlib.sha256(password.encode('utf-8')).hexdigest()}"
-        FROM users WHERE username = "{username}";
-    """)
+    try:
+        mysql_cursor.execute(
+        f"""
+            INSERT INTO
+                user_auth (user_id, email, hashed_password)
+            SELECT
+                user_id,
+                "{email}",
+                "{hashlib.sha256(password.encode('utf-8')).hexdigest()}"
+            FROM users WHERE username = "{username}";
+        """)
+    except Error as e:
+        mysql_cursor.execute(
+        f"""
+            REMOVE FROM users WHERE username = "{username}"
+        """)
+        raise e
+    
     mysql_cursor.execute(
     f"""
         INSERT
