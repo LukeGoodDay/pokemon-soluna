@@ -96,7 +96,7 @@ class TeamPage(tk.Frame):
         if name != '' and name is not None:
             try:
                 sql.update_team_name(self.control.cursor, self.control.session, self.teamid, name)
-                self.load()
+                self.load(self.teamid)
             except Exception as e:
                 self.errortxt['text'] = e
         else:
