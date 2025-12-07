@@ -62,6 +62,7 @@ class HomePage(tk.Frame):
             tea = [i[2] for i in tea]
             if name in tea:
                 self.errortxt['text'] = "Team Already Exists"
+                return
             try:
                 sql.new_team(self.control.cursor, self.control.session, name)
                 self.load(1)

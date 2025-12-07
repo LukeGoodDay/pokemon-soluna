@@ -100,6 +100,7 @@ class TeamPage(tk.Frame):
             tea = [i[2] for i in tea]
             if name in tea:
                 self.errortxt['text'] = "Team Already Exists"
+                return
             try:
                 sql.update_team_name(self.control.cursor, self.control.session, self.teamid, name)
                 self.load(self.teamid, -1)
