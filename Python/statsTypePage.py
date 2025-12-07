@@ -61,8 +61,8 @@ class StatsTypePage(tk.Frame):
         for item in self.type.get_children():
             self.type.delete(item)
         stats = sql.get_type_popularity(self.control.cursor, self.control.session)
-        for stat in stats:
-            self.type.insert(parent='', index=stat[0], values=(stat[2], stat[4], stat[5], stat[1], f"{stat[3]}%"))
+        for i, stat in enumerate(stats):
+            self.type.insert(parent='', index=i, values=(stat[2], stat[4], stat[5], stat[1], f"{stat[3]}%"))
     
     def back(self, *args):
         self.control.show_frame(homePage.HomePage)

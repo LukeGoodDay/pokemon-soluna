@@ -69,8 +69,8 @@ class StatsPage(tk.Frame):
         else:
             stats = sql.get_move_popularity(self.control.cursor, self.control.session)
             self.pokeLbl['text'] = "Move Ranking:"
-        for stat in stats:
-            self.poke.insert(parent='', index=stat[0], values=(stat[2], stat[idx], stat[1], f"{stat[3]}%"))
+        for i, stat in enumerate(stats):
+            self.poke.insert(parent='', index=i, values=(stat[2], stat[idx], stat[1], f"{stat[3]}%"))
 
     def back(self, *args):
         self.control.show_frame(homePage.HomePage)
