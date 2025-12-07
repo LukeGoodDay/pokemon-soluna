@@ -99,6 +99,7 @@ class TeamPage(tk.Frame):
             try:
                 sql.update_team_name(self.control.cursor, self.control.session, self.teamid, name)
                 self.load(self.teamid, -1)
+                self.errortxt['text'] = "Team Successfully Renamed"
             except Exception as e:
                 self.errortxt['text'] = e
         else:

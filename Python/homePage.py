@@ -61,6 +61,7 @@ class HomePage(tk.Frame):
             try:
                 sql.new_team(self.control.cursor, self.control.session, name)
                 self.load(1)
+                self.errortxt['text'] = "Team Successfully Created"
             except Exception as e:
                 self.errortxt['text'] = e
         else:
