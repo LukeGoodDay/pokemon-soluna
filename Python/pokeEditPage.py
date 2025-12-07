@@ -182,11 +182,11 @@ class PokeEditPage(tk.Frame):
             able = self.ability.get()
             if able in abilities:
                 if able == '':
-                    return result[0][1], None
+                    return result[0][0], None
                 else:
                     id = abilities.index(able)
-                    return result[0][1], abilityids[id-1]
-            return result[0][1], None
+                    return result[0][0], abilityids[id-1]
+            return result[0][0], None
         return
 
     def updateNature(self, *args):
