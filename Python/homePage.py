@@ -45,7 +45,9 @@ class HomePage(tk.Frame):
         # Bind selection event
         self.teams.bind("<<ComboboxSelected>>", self.select)
     
-    def load(self, team=1, pokeid=0):
+    def load(self, team=0, pokeid=0):
+        if team != 1:
+            self.errortxt['text'] = ''
         name = sql.get_username(self.control.cursor, self.control.session)
         if name is not None:
             self.greet['text'] = f'Welcome {name[0]}!'
@@ -58,7 +60,7 @@ class HomePage(tk.Frame):
         if name != '' and name is not None:
             try:
                 sql.new_team(self.control.cursor, self.control.session, name)
-                self.load()
+                self.load(1)
             except Exception as e:
                 self.errortxt['text'] = e
         else:
