@@ -6,6 +6,7 @@ import teamPage
 import loginPage
 import pokedexPage
 import statsPage
+import wonderTradePage
 
 class HomePage(tk.Frame):
     teamids = []
@@ -30,10 +31,13 @@ class HomePage(tk.Frame):
         self.new.grid(row=3, column=0, padx=10, pady=10)
 
         self.dex = ttk.Button(self, text="Pokedex", command=self.pokedex)
-        self.dex.grid(row=4, column=0, padx=10, pady=10)
+        self.dex.grid(row=3, column=1, padx=10, pady=10)
 
         self.stat = ttk.Button(self, text="Statistics", command=self.stats)
-        self.stat.grid(row=5, column=0, padx=10, pady=10)
+        self.stat.grid(row=4, column=0, padx=10, pady=10)
+
+        self.wonder = ttk.Button(self, text="Wonder Trades", command=self.wonder)
+        self.wonder.grid(row=4, column=1, padx=10, pady=10)
 
         # Bind selection event
         self.teams.bind("<<ComboboxSelected>>", self.select)
@@ -57,6 +61,9 @@ class HomePage(tk.Frame):
 
     def stats(self, *args):
         self.control.show_frame(statsPage.StatsPage, 0)
+
+    def wonder(self, *args):
+        self.control.show_frame(wonderTradePage.WonderTradePage)
 
     def select(self, *args):
         id = self.teams['values'].index(self.teams.get())

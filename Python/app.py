@@ -7,6 +7,7 @@ from registerPage import RegisterPage
 from statsPage import StatsPage
 from pokedexPage import PokedexPage
 from statsTypePage import StatsTypePage
+from wonderTradePage import WonderTradePage
 
 class tkinterApp(tk.Tk):
     cursor = 0
@@ -30,7 +31,7 @@ class tkinterApp(tk.Tk):
  
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage, StatsPage, PokedexPage, StatsTypePage):
+        for F in (LoginPage, RegisterPage, HomePage, TeamPage, PokeEditPage, StatsPage, PokedexPage, StatsTypePage, WonderTradePage):
  
             frame = F(container, self)
  

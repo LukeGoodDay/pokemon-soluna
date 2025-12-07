@@ -164,17 +164,17 @@ class PokeEditPage(tk.Frame):
             abilities = []
             id = 0
             if abilityids[id] is not None and abilityids[id] != abilityids[id+1]:
-                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
+                abilities.append(sql.get_ability_details(self.control.cursor, self.control.session, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
             if abilityids[id] is not None:
-                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
+                abilities.append(sql.get_ability_details(self.control.cursor, self.control.session, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
             if abilityids[id] is not None:
-                abilities.append(sql.get_ability_details(self.control.cursor, 1, abilityids[id])[1])
+                abilities.append(sql.get_ability_details(self.control.cursor, self.control.session, abilityids[id])[1])
                 id += 1
             else:
                 del abilityids[id]
@@ -191,7 +191,7 @@ class PokeEditPage(tk.Frame):
 
     def updateNature(self, *args):
         nature = self.nature.get()
-        natures = sql.search_natures(self.control.cursor, 1, nature)
+        natures = sql.search_natures(self.control.cursor, self.control.session, nature)
         opts = [i[1] for i in natures]
         self.nature['values'] = opts
         if nature in opts:
@@ -199,7 +199,7 @@ class PokeEditPage(tk.Frame):
 
     def updateItem(self, *args):
         item = self.item.get()
-        items = sql.search_items(self.control.cursor, 1, self.item.get())
+        items = sql.search_items(self.control.cursor, self.control.session, self.item.get())
         opts = [i[1] for i in items]
         self.item['values'] = opts
         if item in opts:
@@ -279,10 +279,10 @@ class PokeEditPage(tk.Frame):
             nick = nick[0:12]
         move = self.updateMove(5)
         if self.pokeid == 0:
-            sql.new_pokemon(self.control.cursor, 1, ids[0], gender, nature, self.teamid, nick, ids[1], item, move[0], move[1], move[2], move[3])
+            sql.new_pokemon(self.control.cursor, self.control.session, ids[0], gender, nature, self.teamid, nick, ids[1], item, move[0], move[1], move[2], move[3])
             print("Sucessfully created pokemon")
         else:
-            sql.update_pokemon(self.control.cursor, 1, self.pokeid, ids[0], gender, nature, nick, ids[1], item, move[0], move[1], move[2], move[3])
+            sql.update_pokemon(self.control.cursor, self.control.session, self.pokeid, ids[0], gender, nature, nick, ids[1], item, move[0], move[1], move[2], move[3])
             print('Sucessfully updated pokemon')
         self.errortxt['text'] = ''
         self.control.show_frame(teamPage.TeamPage, self.teamid, self.pokeid)
