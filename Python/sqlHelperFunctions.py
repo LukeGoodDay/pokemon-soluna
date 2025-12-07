@@ -304,30 +304,32 @@ def update_item_popularity(mysql_cursor, session_id : int) -> None:
 # returns nothing
 def update_move_popularity(mysql_cursor, session_id : int) -> None:
     log(mysql_cursor, session_id, "UPDATE move_popularity")
-    mysql_cursor.execute(
-    f"""
-        UPDATE 
-            move_popularity
-        INNER JOIN
-        (
-            SELECT
-                move_id,
-                COUNT(move_id) AS count,
-                RANK() OVER (ORDER BY COUNT(move_id) DESC) AS popularity_rank,
-                (COUNT(move_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
-            FROM  
-            (
-                SELECT *
-                FROM (VALUES ROW(form_id, pokemon.move_1), ROW(form_id, pokemon.move_2), ROW(form_id, pokemon.move_3), ROW(form_id, pokemon.move_4)) AS p (form_id, move_id)
-                WHERE p.move_id IS NOT NULL
-            )
-            GROUP BY move_id
-        ) AS count_table ON count_table.move_id = move_popularity.move_id
-        SET
-            move_popularity.count = count_table.count,
-            move_popularity.popularity_rank = count_table.popularity_rank,
-            move_popularity.total_percentage = count_table.total_percentage;
-    """)
+    # mysql_cursor.execute(
+    # f"""
+    #     UPDATE 
+    #         move_popularity
+    #     INNER JOIN
+    #     (
+    #         SELECT
+    #             move_id,
+    #             COUNT(move_id) AS count,
+    #             RANK() OVER (ORDER BY COUNT(move_id) DESC) AS popularity_rank,
+    #             (COUNT(move_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+    #         FROM  
+    #         (
+    #             SELECT *
+    #             FROM pokemon
+    #             CROSS JOIN LATERAL
+    #                 (VALUES ROW(pokemon.form_id, pokemon.move_1), ROW(pokemon.form_id, pokemon.move_2), ROW(pokemon.form_id, pokemon.move_3), ROW(pokemon.form_id, pokemon.move_4)) AS p (form_id, move_id)
+    #             WHERE p.move_id IS NOT NULL
+    #         ) AS move_table
+    #         GROUP BY move_id
+    #     ) AS count_table ON count_table.move_id = move_popularity.move_id
+    #     SET
+    #         move_popularity.count = count_table.count,
+    #         move_popularity.popularity_rank = count_table.popularity_rank,
+    #         move_popularity.total_percentage = count_table.total_percentage;
+    # """)
 
 ##########
 #
