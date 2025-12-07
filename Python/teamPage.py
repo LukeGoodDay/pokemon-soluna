@@ -3,6 +3,7 @@ from tkinter import ttk
 import sqlHelperFunctions as sql
 import homePage
 import pokeEditPage
+import pokedexPage
 
 class TeamPage(tk.Frame): 
     teamid = 0
@@ -17,10 +18,12 @@ class TeamPage(tk.Frame):
         self.labels = []
         self.edits = []
         self.deletes = []
+        self.dexs = []
         for i in range(6):
             self.labels.append(tk.Label(self, text = f"Pokemon #{i+1}: Empty"))
             self.edits.append(ttk.Button(self, text="Edit", command= lambda i=i: self.edit(i)))
             self.deletes.append(ttk.Button(self, text="Delete", command= lambda i=i: self.delete(i)))
+            self.dexs.append(ttk.Button(self, text="Info", command= lambda i=i: self.dexview(i)))
         self.back = ttk.Button(self, text="Back", command= lambda: self.control.show_frame(homePage.HomePage))
         self.back.grid(row=7, column=0, padx=10, pady=10)
         self.removebutton = ttk.Button(self, text="Delete", command=self.remove)
@@ -50,6 +53,7 @@ class TeamPage(tk.Frame):
                     self.edits[i]['text'] = 'Edit'
                     self.edits[i].grid(row=i+1, column=1, padx=5, pady=5)
                     self.deletes[i].grid(row=i+1, column=2, padx=5, pady=5)
+                    self.dexs[i].grid(row=i+1, column=3, padx=5, pady=5)
                 elif i == count:
                     self.pokeids[i] = 0
                     self.labels[i]['text'] = f"Pokemon #{i}: Empty"
@@ -57,14 +61,19 @@ class TeamPage(tk.Frame):
                     self.labels[i].grid(row=i+1, column=0, padx=10, pady=10, sticky='w')
                     self.edits[i].grid(row=i+1, column=1, padx=5, pady=5)
                     self.deletes[i].grid_forget()
+                    self.dexs[i].grid_forget()
                 else:
                     self.pokeids[i] = 0
                     self.labels[i].grid_forget()
                     self.edits[i].grid_forget()
                     self.deletes[i].grid_forget()
+                    self.dexs[i].grid_forget()
 
     def edit(self, i, *args):
         self.control.show_frame(pokeEditPage.PokeEditPage, self.teamid, self.pokeids[i])
+
+    def dexview(self, i, *args):
+        self.control.show_frame(pokedexPage.PokedexPage, self.teamid, self.pokeids[i])
 
     def delete(self, i, *args):
         id = self.pokeids[i]

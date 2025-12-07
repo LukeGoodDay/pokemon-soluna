@@ -4,6 +4,7 @@ from tkinter import simpledialog
 import sqlHelperFunctions as sql
 import teamPage
 import loginPage
+import pokedexPage
 
 class HomePage(tk.Frame):
     teamids = []
@@ -27,6 +28,9 @@ class HomePage(tk.Frame):
         self.new = ttk.Button(self, text="New Team", command=self.create)
         self.new.grid(row=3, column=0, padx=10, pady=10)
 
+        self.dex = ttk.Button(self, text="Pokedex", command=self.pokedex)
+        self.dex.grid(row=4, column=0, padx=10, pady=10)
+
         # Bind selection event
         self.teams.bind("<<ComboboxSelected>>", self.select)
     
@@ -43,6 +47,9 @@ class HomePage(tk.Frame):
         if name != '' and name is not None:
             sql.new_team(self.control.cursor, self.control.session, name)
             self.load()
+    
+    def pokedex(self, *args):
+        self.control.show_frame(pokedexPage.PokedexPage, 0)
 
     def select(self, *args):
         id = self.teams['values'].index(self.teams.get())

@@ -91,16 +91,20 @@ class PokedexPage(tk.Frame):
         self.imgbox.grid(row = 0, column=3, rowspan=9, columnspan=2)
 
         self.multlbl = ttk.Label(self, text="Multipliers:")
-        self.steps.grid(row = 8, column = 1, padx = 10, pady = 10)
+        self.multlbl.grid(row = 8, column = 1)
 
-        self.multbox = scrolledtext.ScrolledText(self)
-        self.multbox.grid(row=9, column=0, rowspan=2, columnspan=3, padx = 10, pady = 10)
+        self.multbox = scrolledtext.ScrolledText(self, height=15)
+        self.multbox.grid(row=9, column=0, rowspan=2, columnspan=3)
         self.multbox.configure(state='disabled')
 
 
 
     def load(self, teamid=0, pokeid=0):
         self.teamid = teamid
+        if pokeid != 0:
+            formid = sql.get_pokemon_details(self.control.cursor, self.control.session, pokeid)[1]
+            form = sql.get_form_details(self.control.cursor, self.control.session, formid)[3]
+            self.form.set(form)
         self.updateForm()
     
     def updateForm(self, *args):
@@ -157,9 +161,29 @@ class PokedexPage(tk.Frame):
             self.steps['text'] = f"Hatch Steps: {steps}"
 
             #27
+            self.multbox.configure(state='normal')
+            self.multbox.delete('1.0', tk.END)
             types = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy']
+            eff = [[], [], [], [], []]
+            titles = ["Very Strong:", "Strong:", "Weak:", "Immune:", "Normal:"]
             for i in range(18):
-                pass
+                stren = f[i+27]
+                if stren == 2:
+                    eff[0].append(types[i])
+                elif stren == 1.5:
+                    eff[1].append(types[i])
+                elif stren == 0.5:
+                    eff[2].append(types[i])
+                elif stren == 0:
+                    eff[3].append(types[i])
+                else: # normal
+                    eff[4].append(types[i])
+            for i in range(5):
+                if len(eff[i]) != 0:
+                    self.multbox.insert(tk.END, f"{titles[i]}\n")
+                    self.multbox.insert(tk.END, ', '.join(eff[i]))
+                    self.multbox.insert(tk.END, '\n\n')
+            self.multbox.configure(state='disabled')
 
             loc = sql.get_image(self.control.cursor, self.control.session, f[2])
             self.img = Image.open(loc)
@@ -167,5 +191,8 @@ class PokedexPage(tk.Frame):
             self.imgbox['image'] = self.img
 
 
-    def goBack(self):
-        self.control.show_frame(teamPage.TeamPage, self.teamid)
+    def goBack(self, *args):
+        if self.teamid != 0:
+            self.control.show_frame(teamPage.TeamPage, self.teamid)
+        else:
+            self.control.show_frame(homePage.HomePage)

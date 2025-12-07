@@ -9,7 +9,7 @@ from pokedexPage import PokedexPage
 
 class tkinterApp(tk.Tk):
     cursor = 0
-    session = 1
+    session = 0
     conn=1
     # __init__ function for class tkinterApp 
     def __init__(self, *args, **kwargs): 
@@ -40,12 +40,12 @@ class tkinterApp(tk.Tk):
  
             frame.grid(row = 0, column = 0, sticky ="nsew")
  
-        self.show_frame(PokedexPage)
+        self.show_frame(LoginPage)
     
     def initCursor(self, conn):
         self.conn = conn
         self.cursor = conn.cursor()
-        self.frames[PokedexPage].load()
+        self.frames[LoginPage].load()
     
     def closeCursor(self):
         self.cursor.close()
