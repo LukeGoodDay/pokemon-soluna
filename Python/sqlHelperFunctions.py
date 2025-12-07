@@ -135,6 +135,10 @@ def new_pokemon(mysql_cursor, session_id : int, form_id : int, gender : str, nat
         INSERT INTO pokemon(form_id, nickname, gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """, (form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4, team_id))
+    update_pokemon_popularity(mysql_cursor, session_id)
+    update_type_popularity(mysql_cursor, session_id)
+    update_item_popularity(mysql_cursor, session_id)
+    update_move_popularity(mysql_cursor, session_id)
 
 # add_wonder_trade - adds a user found wonder trade
 # connector mysql_cursor - the link to the database
@@ -214,6 +218,10 @@ def update_pokemon(mysql_cursor, session_id : int, pokemon_id : int, form_id : i
             move_4 = %s
         WHERE pokemon_id = {pokemon_id};
     """, (form_id, nickname, None if gender == 'N' else gender, nature_id, ability_id, item_id, move_1, move_2, move_3, move_4))
+    update_pokemon_popularity(mysql_cursor, session_id)
+    update_type_popularity(mysql_cursor, session_id)
+    update_item_popularity(mysql_cursor, session_id)
+    update_move_popularity(mysql_cursor, session_id)
 
 # update_pokemon_popularity - updates the data in the pokemon popularity table
 # connector mysql_cursor - the link to the database
@@ -346,6 +354,10 @@ def remove_team(mysql_cursor, session_id : int, team_id : int) -> None:
     f"""
         DELETE FROM teams WHERE team_id = {team_id};
     """)
+    update_pokemon_popularity(mysql_cursor, session_id)
+    update_type_popularity(mysql_cursor, session_id)
+    update_item_popularity(mysql_cursor, session_id)
+    update_move_popularity(mysql_cursor, session_id)
 
 # remove_pokemon - removes an existing pokemon
 # connector mysql_cursor - the link to the database
@@ -358,6 +370,10 @@ def remove_pokemon(mysql_cursor, session_id : int, pokemon_id : int) -> None:
     f"""
         DELETE FROM pokemon WHERE pokemon_id = {pokemon_id};
     """)
+    update_pokemon_popularity(mysql_cursor, session_id)
+    update_type_popularity(mysql_cursor, session_id)
+    update_item_popularity(mysql_cursor, session_id)
+    update_move_popularity(mysql_cursor, session_id)
 
 ##########
 #
