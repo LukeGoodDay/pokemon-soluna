@@ -231,22 +231,21 @@ def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
     log(mysql_cursor, session_id, "UPDATE pokemon_popularity")
     mysql_cursor.execute(
     f"""
-        WITH count_table AS (
-            SELECT
-                form_id,
-                COUNT(form_id) AS count,
-                RANK() OVER (ORDER BY COUNT(form_id) DESC) AS popularity_rank,
-                (COUNT(form_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
-            FROM pokemon GROUP BY form_id
-        )
         UPDATE 
             pokemon_popularity
+        INNER JOIN
+        (
+            SELECT
+            form_id,
+            COUNT(form_id) AS count,
+            RANK() OVER (ORDER BY COUNT(form_id) DESC) AS popularity_rank,
+            (COUNT(form_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+            FROM pokemon GROUP BY form_id
+        ) AS count_table ON count_table.form_id = pokemon_popularity.form_id
         SET
-            count = count_table.count,
-            popularity_rank = count_table.popularity_rank,
-            total_percentage = count_table.total_percentage
-        WHERE
-            count_table.form_id = pokemon_popularity.form_id;
+            pokemon_popularity.count = count_table.count,
+            pokemon_popularity.popularity_rank = count_table.popularity_rank,
+            pokemon_popularity.total_percentage = count_table.total_percentage;
     """)
 
 # update_type_popularity - updates the data in the type popularity table
@@ -257,22 +256,21 @@ def update_type_popularity(mysql_cursor, session_id : int) -> None:
     log(mysql_cursor, session_id, "UPDATE type_popularity")
     mysql_cursor.execute(
     f"""
-        WITH count_table AS (
+        UPDATE 
+            type_popularity
+        INNER JOIN
+        (
             SELECT
                 type_id,
                 COUNT(type_id) AS count,
                 RANK() OVER (ORDER BY COUNT(type_id) DESC) AS popularity_rank,
                 (COUNT(type_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
             FROM pokemon INNER JOIN forms ON pokemon.form_id = forms.form_id GROUP BY type_id
-        )
-        UPDATE 
-            type_popularity
+        ) AS count_table ON count_table.type_id = type_popularity.type_id
         SET
-            count = count_table.count,
-            popularity_rank = count_table.popularity_rank,
-            total_percentage = count_table.total_percentage
-        WHERE
-            count_table.type_id = type_popularity.type_id;
+            type_popularity.count = count_table.count,
+            type_popularity.popularity_rank = count_table.popularity_rank,
+            type_popularity.total_percentage = count_table.total_percentage;
     """)
 
 # update_item_popularity - updates the data in the item popularity table
@@ -283,22 +281,21 @@ def update_item_popularity(mysql_cursor, session_id : int) -> None:
     log(mysql_cursor, session_id, "UPDATE item_popularity")
     mysql_cursor.execute(
     f"""
-        WITH count_table AS (
+        UPDATE 
+            item_popularity
+        INNER JOIN
+        (
             SELECT
                 item_id,
                 COUNT(item_id) AS count,
                 RANK() OVER (ORDER BY COUNT(item_id) DESC) AS popularity_rank,
                 (COUNT(item_id) / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100) AS total_percentage
             FROM pokemon WHERE item_id IS NOT NULL GROUP BY item_id
-        )
-        UPDATE 
-            item_popularity
+        ) AS count_table ON count_table.item_id = item_popularity.item_id
         SET
-            count = count_table.count,
-            popularity_rank = count_table.popularity_rank,
-            total_percentage = count_table.total_percentage
-        WHERE
-            count_table.item_id = item_popularity.item_id;
+            item_popularity.count = count_table.count,
+            item_popularity.popularity_rank = count_table.popularity_rank,
+            item_popularity.total_percentage = count_table.total_percentage;
     """)
 
 # update_move_popularity - updates the data in the move popularity table
@@ -309,7 +306,10 @@ def update_move_popularity(mysql_cursor, session_id : int) -> None:
     log(mysql_cursor, session_id, "UPDATE move_popularity")
     mysql_cursor.execute(
     f"""
-        WITH count_table AS (
+        UPDATE 
+            move_popularity
+        INNER JOIN
+        (
             SELECT
                 move_id,
                 COUNT(move_id) AS count,
@@ -322,15 +322,11 @@ def update_move_popularity(mysql_cursor, session_id : int) -> None:
                 WHERE p.move_id IS NOT NULL
             )
             GROUP BY move_id
-        )
-        UPDATE 
-            move_popularity
+        ) AS count_table ON count_table.move_id = move_popularity.move_id
         SET
-            count = count_table.count,
-            popularity_rank = count_table.popularity_rank,
-            total_percentage = count_table.total_percentage
-        WHERE
-            count_table.move_id = move_popularity.move_id;
+            move_popularity.count = count_table.count,
+            move_popularity.popularity_rank = count_table.popularity_rank,
+            move_popularity.total_percentage = count_table.total_percentage;
     """)
 
 ##########
