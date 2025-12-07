@@ -58,6 +58,10 @@ class HomePage(tk.Frame):
     def create(self, *args):
         name = simpledialog.askstring("Create Team", "What is the name of your team?")
         if name != '' and name is not None:
+            tea = sql.get_user_teams(self.control.cursor, self.control.session)
+            tea = [i[2] for i in tea]
+            if name in tea:
+                self.errortxt['text'] = "Team Already Exists"
             try:
                 sql.new_team(self.control.cursor, self.control.session, name)
                 self.load(1)
