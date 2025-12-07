@@ -33,7 +33,7 @@ def register(mysql_cursor, username : str, email : str, password : str) -> int:
     except Error as e:
         mysql_cursor.execute(
         f"""
-            REMOVE FROM users WHERE username = "{username}";
+            DELETE FROM users WHERE username = "{username}";
         """)
         raise e
     
