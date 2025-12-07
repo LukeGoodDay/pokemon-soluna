@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlHelperFunctions as sql
+import mysql.connector.errors as sqlerrors
 import loginPage
 import homePage
 
@@ -25,23 +26,29 @@ class RegisterPage(tk.Frame):
         self.password = ttk.Entry(self)
         self.password.grid(row = 5, column = 1, padx = 10, pady = 10)
 
+        self.errortxt = ttk.Label(self, text ="")
+        self.errortxt.grid(row = 6, column = 0, columnspan=3)
+
         self.submit = ttk.Button(self, text = "Submit", command=self.submitPress)
-        self.submit.grid(row = 6, column = 0, padx = 10, pady = 10, columnspan=2)
+        self.submit.grid(row = 7, column = 0, padx = 10, pady = 10, columnspan=2)
 
         self.submit = ttk.Button(self, text = "Login Instead", command=self.swapLogin)
-        self.submit.grid(row = 7, column = 0, padx = 10, pady = 10, columnspan=2)
+        self.submit.grid(row = 8, column = 0, padx = 10, pady = 10, columnspan=2)
 
     def load(self, teamid=0, pokeid=0):
         self.email.delete(0, tk.END)
         self.password.delete(0, tk.END)
         self.name.delete(0, tk.END)
+        self.errortxt['text'] = ''
 
     def submitPress(self):
         try:
             self.control.session = sql.register(self.control.cursor, self.name.get(), self.email.get(), self.password.get())
             self.control.show_frame(homePage.HomePage)
+        except sqlerrors.IntegrityError as e:
+            self.errortxt['text'] = "User Already Exists"
         except Exception as e:
-            print(f"[STD ERROR] {e}")
+            self.errortxt['text'] = e
 
     def swapLogin(self):
         self.control.show_frame(loginPage.LoginPage)
