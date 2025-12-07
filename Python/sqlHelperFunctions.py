@@ -233,15 +233,24 @@ def update_pokemon_popularity(mysql_cursor, session_id : int) -> None:
     f"""
         UPDATE 
             pokemon_popularity
-        INNER JOIN
+        NATURAL JOIN
         (
             SELECT
-            form_id,
-            COUNT(form_id) AS count,
-            RANK() OVER (ORDER BY COUNT(form_id) DESC) AS popularity_rank,
-            (COUNT(form_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
-            FROM pokemon GROUP BY form_id
-        ) AS count_table ON count_table.form_id = pokemon_popularity.form_id
+                pokemon_popularity.form_id,
+                CASE WHEN ct.count IS NULL THEN 0 ELSE ct.count END AS count,
+                RANK() OVER (ORDER BY ct.count DESC) AS popularity_rank,
+                CASE WHEN ct.total_percentage IS NULL THEN 0 ELSE ct.total_percentage END AS total_percentage
+            FROM
+                pokemon_popularity
+            LEFT JOIN
+            (
+                SELECT
+                    form_id,
+                    COUNT(form_id) AS count,
+                    (COUNT(form_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+                FROM pokemon GROUP BY form_id
+            ) AS ct ON ct.form_id = pokemon_popularity.form_id
+        ) AS count_table
         SET
             pokemon_popularity.count = count_table.count,
             pokemon_popularity.popularity_rank = count_table.popularity_rank,
@@ -258,15 +267,24 @@ def update_type_popularity(mysql_cursor, session_id : int) -> None:
     f"""
         UPDATE 
             type_popularity
-        INNER JOIN
+        NATURAL JOIN
         (
             SELECT
-                type_id,
-                COUNT(type_id) AS count,
-                RANK() OVER (ORDER BY COUNT(type_id) DESC) AS popularity_rank,
-                (COUNT(type_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
-            FROM pokemon INNER JOIN forms ON pokemon.form_id = forms.form_id GROUP BY type_id
-        ) AS count_table ON count_table.type_id = type_popularity.type_id
+                type_popularity.type_id,
+                CASE WHEN ct.count IS NULL THEN 0 ELSE ct.count END AS count,
+                RANK() OVER (ORDER BY ct.count DESC) AS popularity_rank,
+                CASE WHEN ct.total_percentage IS NULL THEN 0 ELSE ct.total_percentage END AS total_percentage
+            FROM 
+                type_popularity
+            LEFT JOIN
+            (
+                SELECT
+                    type_id,
+                    COUNT(type_id) AS count,
+                    (COUNT(type_id) / (SELECT COUNT(*) FROM pokemon) * 100) AS total_percentage
+                FROM pokemon INNER JOIN forms ON pokemon.form_id = forms.form_id GROUP BY type_id
+            ) AS ct ON ct.type_id = type_popularity.type_id
+        ) AS count_table
         SET
             type_popularity.count = count_table.count,
             type_popularity.popularity_rank = count_table.popularity_rank,
@@ -283,15 +301,24 @@ def update_item_popularity(mysql_cursor, session_id : int) -> None:
     f"""
         UPDATE 
             item_popularity
-        INNER JOIN
+        NATURAL JOIN
         (
             SELECT
-                item_id,
-                COUNT(item_id) AS count,
-                RANK() OVER (ORDER BY COUNT(item_id) DESC) AS popularity_rank,
-                (COUNT(item_id) / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100) AS total_percentage
-            FROM pokemon WHERE item_id IS NOT NULL GROUP BY item_id
-        ) AS count_table ON count_table.item_id = item_popularity.item_id
+                item_popularity.item_id,
+                CASE WHEN ct.count IS NULL THEN 0 ELSE ct.count END AS count,
+                RANK() OVER (ORDER BY ct.count DESC) AS popularity_rank,
+                CASE WHEN ct.total_percentage IS NULL THEN 0 ELSE ct.total_percentage END AS total_percentage
+            FROM
+                item_popularity
+            LEFT JOIN
+            (
+                SELECT
+                    item_id,
+                    COUNT(item_id) AS count,
+                    (COUNT(item_id) / (SELECT COUNT(*) FROM pokemon WHERE item_id IS NOT NULL) * 100) AS total_percentage
+                FROM pokemon WHERE item_id IS NOT NULL GROUP BY item_id
+            ) AS ct ON ct.item_id = item_popularity.item_id
+        ) AS count_table
         SET
             item_popularity.count = count_table.count,
             item_popularity.popularity_rank = count_table.popularity_rank,
@@ -584,7 +611,7 @@ def find_wondertrade(mysql_cursor, session_id : int, form_id : int):
 def get_pokemon_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM pokemon_popularity NATURAL JOIN forms ORDER BY pokemon_popularity.count desc;
+        SELECT * FROM pokemon_popularity NATURAL JOIN forms ORDER BY pokemon_popularity.count desc LIMIT 10;
     """)
     return mysql_cursor.fetchall()
 
@@ -595,7 +622,7 @@ def get_pokemon_popularity(mysql_cursor, session_id : int):
 def get_type_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM type_popularity NATURAL JOIN type_chart ORDER BY type_popularity.count desc;
+        SELECT * FROM type_popularity NATURAL JOIN type_chart ORDER BY type_popularity.count desc LIMIT 10;
     """)
     return mysql_cursor.fetchall()
 
@@ -606,7 +633,7 @@ def get_type_popularity(mysql_cursor, session_id : int):
 def get_item_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM item_popularity NATURAL JOIN items ORDER BY item_popularity.count desc;
+        SELECT * FROM item_popularity NATURAL JOIN items ORDER BY item_popularity.count desc LIMIT 10;
     """)
     return mysql_cursor.fetchall()
 
@@ -617,6 +644,6 @@ def get_item_popularity(mysql_cursor, session_id : int):
 def get_move_popularity(mysql_cursor, session_id : int):
     mysql_cursor.execute(
     f"""
-        SELECT * FROM move_popularity NATURAL JOIN moves ORDER BY move_popularity.count desc;
+        SELECT * FROM move_popularity NATURAL JOIN moves ORDER BY move_popularity.count desc LIMIT 10;
     """)
     return mysql_cursor.fetchall()
